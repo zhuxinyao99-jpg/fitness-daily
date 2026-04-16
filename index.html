@@ -181,6 +181,11 @@
         </div>
         <div id="today-log" class="space-y-2"></div>
       </section>
+
+      <div class="flex justify-center gap-6 pb-24 mt-4">
+        <button id="btn-export" class="text-xs text-[#EAE6BC]/50 font-bold underline decoration-[#EAE6BC]/20 hover:text-primary transition-colors">↑ 导出备份历史数据</button>
+        <button id="btn-import" class="text-xs text-[#EAE6BC]/50 font-bold underline decoration-[#EAE6BC]/20 hover:text-primary transition-colors">↓ 导入备份历史数据</button>
+      </div>
   </main>
 </div>
 
@@ -571,6 +576,28 @@ PageModules['record'] = (function() {
         btn.textContent = '✓ 已记录！';
         renderTodayLog(); iW.value = ''; calcVol();
         setTimeout(()=> btn.textContent = '＋ 录入今日账本', 1500);
+    });
+
+    document.getElementById('btn-export').addEventListener('click', () => {
+        const raw = localStorage.getItem('gym_records') || '[]';
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(raw).then(() => alert('已将所有历史数据复制到剪贴板！\\n去 Github 新网址点击“导入”并粘贴即可。')).catch(() => prompt('按全选复制：', raw));
+        } else {
+            prompt('按全选复制：', raw);
+        }
+    });
+
+    document.getElementById('btn-import').addEventListener('click', () => {
+        const str = prompt('长按粘贴你之前导出的历史数据码：');
+        if(!str) return;
+        try {
+            const arr = JSON.parse(str);
+            if(Array.isArray(arr)) {
+                localStorage.setItem('gym_records', JSON.stringify(arr));
+                alert('数据恢复成功！页面将刷新。');
+                location.reload();
+            } else { alert('数据格式错误，不是一个列表'); }
+        } catch(e) { alert('数据解析失败，检查是否粘贴完整！'); }
     });
 
     renderChips('背');
