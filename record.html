@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>力量打卡 - Eric's Fitness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode:"class", theme:{ extend:{
+      colors:{
+        "primary":"#d8e2ff","tertiary":"#9befff","tertiary-container":"#00daf3",
+        "background":"#0b1229","surface":"#0b1229","surface-container-low":"#141a32",
+        "surface-container-highest":"#2d344c","on-surface":"#dce1ff",
+        "on-surface-variant":"#c4c6d0","primary-fixed-dim":"#adc6ff","error":"#ffb4ab",
+        "on-tertiary-container":"#005b66"
+      },
+      fontFamily:{ headline:["Space Grotesk"], body:["Manrope"] }
+    }}
+  }
+</script>
+<style>
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  body{min-height:max(884px,100dvh);background-color:#0b1229;color:#dce1ff}
+  .tab-active{background:rgba(0,218,243,0.15);color:#00daf3;border-color:#00daf3}
+  .tab-inactive{background:rgba(45,52,76,0.4);color:#c4c6d0;border-color:transparent}
+  .action-selected{background:rgba(0,218,243,0.15);color:#00daf3;border-color:#00daf3}
+  .action-unselected{background:rgba(45,52,76,0.5);color:#c4c6d0;border-color:transparent}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="font-body pb-32">
+
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/80 backdrop-blur-xl border-b border-white/5">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-fixed-dim/30">
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3LHJoZU9nCzPzUUBLDIE1ja5rwLproh6JhImJ0w6FBiOWLjeEhKpOEj_TYGHWsFpgSKegC1GcseDmti1GKR9xSU5ClHc3Mhhl4pPihQ6ILjYoSm1bWuDiP-Z3JrVcILGo88hC7r3G6b_saofJ5FkmdeJEOjfwVhWtaHCsFUQgBxLRqADpjYqQ1QVzg05McDG9sxVIqOU12A4TTe8eVEA-YbZb9scU9y-Azn2KkKdy4LwjPSxCiALJcJjSuSE1RHT4WmGiOlyws-m3" alt="profile"/>
+    </div>
+    <span class="font-headline text-lg font-bold text-primary-fixed-dim">力量训练打卡</span>
+  </div>
+  <span class="text-xs text-on-surface-variant font-medium" id="date-display"></span>
+</header>
+
+<main class="pt-20 px-4 max-w-lg mx-auto space-y-5">
+
+  <!-- MUSCLE GROUP TABS -->
+  <section>
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">选择训练部位</p>
+    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="muscle-tabs">
+      <button class="muscle-tab tab-active flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="背">🔙 背</button>
+      <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="胸">💪 胸</button>
+      <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="腿">🦵 腿</button>
+      <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="肩">🔝 肩</button>
+      <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="手臂">💪 手臂</button>
+      <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="其他">✨ 其他</button>
+    </div>
+  </section>
+
+  <!-- EXERCISE QUICK PICK -->
+  <section class="bg-surface-container-low rounded-xl p-4 border border-white/5">
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">快速选择动作</p>
+    <div class="flex flex-wrap gap-2 mb-3" id="action-chips">
+      <!-- Populated by JS -->
+    </div>
+    <!-- Custom input -->
+    <div class="flex gap-2 mt-2">
+      <input type="text" id="custom-action-input" placeholder="或自己输入动作名称…" 
+        class="flex-1 bg-surface-container-highest border border-white/10 rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-tertiary-container transition-all placeholder:text-on-surface-variant/50"/>
+      <button id="custom-action-btn" class="px-3 py-2 rounded-lg bg-tertiary-container/20 text-tertiary border border-tertiary-container/50 text-sm font-bold hover:bg-tertiary-container/30 transition-all">确认</button>
+    </div>
+    <!-- Selected action display -->
+    <div id="selected-display" class="mt-3 hidden">
+      <span class="text-[10px] text-on-surface-variant uppercase tracking-widest">当前选中：</span>
+      <span id="selected-action-name" class="text-tertiary-container font-bold text-sm"></span>
+    </div>
+  </section>
+
+  <!-- METRICS INPUT -->
+  <section class="bg-surface-container-low rounded-xl p-4 border border-white/5 space-y-4">
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">训练数据</p>
+    <div class="grid grid-cols-3 gap-3">
+      <div class="space-y-1">
+        <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">负重 KG</label>
+        <input type="number" id="input-weight" placeholder="25" 
+          class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-tertiary-container outline-none transition-all"/>
+      </div>
+      <div class="space-y-1">
+        <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">单组次数</label>
+        <input type="number" id="input-reps" placeholder="10"
+          class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-tertiary-container outline-none transition-all"/>
+      </div>
+      <div class="space-y-1">
+        <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">完成组数</label>
+        <input type="number" id="input-sets" placeholder="4"
+          class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-tertiary-container outline-none transition-all"/>
+      </div>
+    </div>
+    <!-- Live Volume -->
+    <div class="flex items-end justify-between pt-2 border-t border-white/10">
+      <div>
+        <span class="text-[10px] font-bold text-on-surface-variant uppercase">本项总容量</span>
+        <div id="live-volume" class="text-3xl font-headline font-bold text-tertiary-container drop-shadow-[0_0_8px_rgba(0,218,243,0.4)]">0.0 <span class="text-sm font-normal text-on-surface-variant">Tons</span></div>
+      </div>
+      <!-- RPE -->
+      <div class="text-right">
+        <span class="text-[10px] font-bold text-on-surface-variant uppercase">RPE</span>
+        <div id="val-rpe" class="text-xl font-headline font-bold text-error">8.0</div>
+      </div>
+    </div>
+    <input type="range" id="slider-rpe" min="5" max="10" value="8" step="0.5" 
+      class="w-full accent-error h-1.5 bg-surface-container-highest rounded-full appearance-none cursor-pointer"/>
+    <p id="rpe-label" class="text-xs text-on-surface-variant text-right -mt-1">还能再做2个</p>
+  </section>
+
+  <!-- SAVE -->
+  <button id="save-btn" class="w-full py-4 rounded-xl bg-tertiary-container text-on-tertiary-container font-headline font-bold text-lg tracking-widest shadow-[0_0_20px_rgba(0,218,243,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-transform">
+    ＋ 录入今日账本
+  </button>
+
+  <!-- TODAY'S LOG -->
+  <section id="today-log-section" class="hidden">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">今日已记录</p>
+      <span id="today-count" class="text-tertiary text-xs font-bold"></span>
+    </div>
+    <div id="today-log" class="space-y-2"></div>
+  </section>
+
+</main>
+
+<!-- NAV -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/60 backdrop-blur-xl rounded-t-3xl border-t border-white/5">
+  <a class="flex flex-col items-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_10px_#00daf3]" href="record.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl" style="font-variation-settings:'FILL' 1">edit_note</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">打卡</span>
+  </a>
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="page_2.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl">insights</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">统计</span>
+  </a>
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#" onclick="alert('日程表功能即将上线~'); return false;">
+    <span class="material-symbols-outlined mb-0.5 text-xl">calendar_today</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">日程</span>
+  </a>
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="index.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl">sports_tennis</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">专项</span>
+  </a>
+</nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ── DATE ──────────────────────────────────────────────────────
+  document.getElementById("date-display").textContent =
+    new Date().toLocaleDateString('zh-CN', { month:'long', day:'numeric', weekday:'short' });
+
+  // ── EXERCISE LIBRARY BY MUSCLE GROUP ─────────────────────────
+  const library = {
+    "背": ["直臂下压","坐姿划船","高位下拉","坐拉","辅助引体","坐姿下拉(左右)"],
+    "胸": ["卧推","握推","辅助下胸","上斜哑铃","下胸","辅助推走","龙门架飞鸟","飞鸟超级组"],
+    "腿": ["深蹲","坐姿髋内收","髋外展","健步蹲","弓箭蹲","髋内收"],
+    "肩": ["拉绳索","绳索面拉","侧平举","龙门架侧平举","反向蝴蝶","推肩(躺)","坐姿反向飞鸟"],
+    "手臂": ["二头弯举","锤式弯举","三头下压","窄距俯卧撑"],
+    "其他": ["平板支撑","卷腹","俯卧撑","引体向上","波比跳"]
+  };
+
+  // ── STATE ─────────────────────────────────────────────────────
+  let currentGroup = "背";
+  let currentAction = "";
+
+  // ── MIGRATION: seed historical data if first visit ────────────
+  let records = JSON.parse(localStorage.getItem('gym_records') || '[]');
+  if (records.length === 0) {
+    records = [
+      {"date":"2026-04-16T00:00:00.000Z","action":"直臂下压","group":"背","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-04-16T00:01:00.000Z","action":"坐姿划船","group":"背","weight":27,"sets":4,"reps":10,"volume":1080,"rpe":7},
+      {"date":"2026-04-16T00:02:00.000Z","action":"高位下拉","group":"背","weight":25,"sets":4,"reps":10,"volume":1000,"rpe":7},
+      {"date":"2026-04-14T00:00:00.000Z","action":"握推","group":"胸","weight":12.5,"sets":6,"reps":10,"volume":650,"rpe":8},
+      {"date":"2026-04-14T00:01:00.000Z","action":"辅助下胸","group":"胸","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-04-10T00:00:00.000Z","action":"拉绳索","group":"肩","weight":15,"sets":4,"reps":10,"volume":600,"rpe":7},
+      {"date":"2026-04-10T00:01:00.000Z","action":"绳索面拉","group":"肩","weight":27,"sets":4,"reps":10,"volume":1080,"rpe":7},
+      {"date":"2026-04-10T00:02:00.000Z","action":"侧平举","group":"肩","weight":7.5,"sets":4,"reps":10,"volume":300,"rpe":7},
+      {"date":"2026-04-09T00:00:00.000Z","action":"深蹲","group":"腿","weight":25,"sets":4,"reps":10,"volume":1000,"rpe":8},
+      {"date":"2026-04-09T00:01:00.000Z","action":"坐姿髋内收","group":"腿","weight":29,"sets":4,"reps":10,"volume":1160,"rpe":7},
+      {"date":"2026-04-08T00:00:00.000Z","action":"直臂下压","group":"背","weight":23,"sets":3,"reps":10,"volume":690,"rpe":7},
+      {"date":"2026-04-08T00:01:00.000Z","action":"坐姿划船","group":"背","weight":27,"sets":4,"reps":10,"volume":1080,"rpe":7},
+      {"date":"2026-04-08T00:02:00.000Z","action":"坐拉","group":"背","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-04-08T00:03:00.000Z","action":"辅助引体","group":"背","weight":23,"sets":4,"reps":10,"volume":920,"rpe":8},
+      {"date":"2026-04-07T00:00:00.000Z","action":"卧推","group":"胸","weight":10,"sets":1,"reps":20,"volume":200,"rpe":6},
+      {"date":"2026-04-07T00:01:00.000Z","action":"辅助下胸","group":"胸","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-04-07T00:02:00.000Z","action":"上斜哑铃","group":"胸","weight":5,"sets":4,"reps":10,"volume":200,"rpe":6},
+      {"date":"2026-04-03T00:00:00.000Z","action":"深蹲","group":"腿","weight":22.5,"sets":4,"reps":10,"volume":900,"rpe":8},
+      {"date":"2026-04-03T00:01:00.000Z","action":"髋外展","group":"腿","weight":29,"sets":4,"reps":10,"volume":1160,"rpe":7},
+      {"date":"2026-04-03T00:02:00.000Z","action":"健步蹲","group":"腿","weight":10,"sets":4,"reps":10,"volume":400,"rpe":7},
+      {"date":"2026-04-01T00:00:00.000Z","action":"拉绳索","group":"肩","weight":13,"sets":3,"reps":10,"volume":390,"rpe":6},
+      {"date":"2026-04-01T00:01:00.000Z","action":"龙门架侧平举","group":"肩","weight":13,"sets":4,"reps":10,"volume":520,"rpe":7},
+      {"date":"2026-04-01T00:02:00.000Z","action":"绳索面拉","group":"肩","weight":27,"sets":2,"reps":10,"volume":540,"rpe":7},
+      {"date":"2026-04-01T00:03:00.000Z","action":"反向蝴蝶","group":"肩","weight":13,"sets":4,"reps":10,"volume":520,"rpe":7},
+      {"date":"2026-03-31T00:00:00.000Z","action":"直臂下压","group":"背","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-03-31T00:01:00.000Z","action":"坐姿划船","group":"背","weight":27,"sets":4,"reps":10,"volume":1080,"rpe":7},
+      {"date":"2026-03-31T00:02:00.000Z","action":"坐拉","group":"背","weight":27,"sets":4,"reps":10,"volume":1080,"rpe":7},
+      {"date":"2026-03-29T00:00:00.000Z","action":"深蹲","group":"腿","weight":25,"sets":4,"reps":10,"volume":1000,"rpe":8},
+      {"date":"2026-03-29T00:01:00.000Z","action":"髋内收","group":"腿","weight":29,"sets":4,"reps":10,"volume":1160,"rpe":7},
+      {"date":"2026-03-29T00:02:00.000Z","action":"弓箭蹲","group":"腿","weight":7.5,"sets":4,"reps":10,"volume":300,"rpe":7},
+      {"date":"2026-03-28T00:00:00.000Z","action":"卧推","group":"胸","weight":10,"sets":5,"reps":10,"volume":350,"rpe":6},
+      {"date":"2026-03-28T00:01:00.000Z","action":"下胸","group":"胸","weight":10,"sets":3,"reps":10,"volume":300,"rpe":6},
+      {"date":"2026-03-28T00:02:00.000Z","action":"辅助推走","group":"胸","weight":6,"sets":2,"reps":10,"volume":120,"rpe":5},
+      {"date":"2026-03-25T00:00:00.000Z","action":"直臂下压","group":"背","weight":13,"sets":4,"reps":10,"volume":520,"rpe":6},
+      {"date":"2026-03-25T00:01:00.000Z","action":"坐姿下拉(左右)","group":"背","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-03-25T00:02:00.000Z","action":"辅助引体","group":"背","weight":10,"sets":4,"reps":10,"volume":400,"rpe":7},
+      {"date":"2026-03-24T00:00:00.000Z","action":"推肩(躺)","group":"肩","weight":5,"sets":2,"reps":8,"volume":80,"rpe":5},
+      {"date":"2026-03-24T00:01:00.000Z","action":"龙门架飞鸟","group":"胸","weight":23,"sets":4,"reps":10,"volume":920,"rpe":7},
+      {"date":"2026-03-24T00:02:00.000Z","action":"飞鸟超级组","group":"胸","weight":5,"sets":1,"reps":20,"volume":100,"rpe":6},
+      {"date":"2026-03-24T00:03:00.000Z","action":"坐姿反向飞鸟","group":"肩","weight":5,"sets":1,"reps":8,"volume":40,"rpe":5}
+    ];
+    localStorage.setItem('gym_records', JSON.stringify(records));
+  }
+
+  // ── RENDER CHIPS FOR SELECTED GROUP ──────────────────────────
+  function renderChips(group) {
+    const container = document.getElementById('action-chips');
+    container.innerHTML = '';
+
+    // Merge static library + previously used in this group
+    const used = [...new Set(
+      records.filter(r => r.group === group || r.action && library[group]?.includes(r.action))
+             .map(r => r.action)
+    )];
+    const base = library[group] || [];
+    const all = [...new Set([...base, ...used])];
+
+    all.forEach(name => {
+      const btn = document.createElement('button');
+      btn.className = `action-chip action-unselected px-3 py-1.5 rounded-lg text-xs font-bold border transition-all`;
+      btn.textContent = name;
+      btn.addEventListener('click', () => selectAction(name, btn));
+      container.appendChild(btn);
+    });
+  }
+
+  function selectAction(name, btn) {
+    document.querySelectorAll('.action-chip').forEach(b => {
+      b.classList.remove('action-selected');
+      b.classList.add('action-unselected');
+    });
+    if(btn) { btn.classList.replace('action-unselected','action-selected'); }
+    currentAction = name;
+    document.getElementById('selected-action-name').textContent = name;
+    document.getElementById('selected-display').classList.remove('hidden');
+    document.getElementById('custom-action-input').value = name;
+  }
+
+  // ── TABS ──────────────────────────────────────────────────────
+  document.querySelectorAll('.muscle-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.muscle-tab').forEach(t => {
+        t.classList.replace('tab-active','tab-inactive');
+      });
+      tab.classList.replace('tab-inactive','tab-active');
+      currentGroup = tab.dataset.group;
+      currentAction = '';
+      document.getElementById('selected-display').classList.add('hidden');
+      document.getElementById('custom-action-input').value = '';
+      renderChips(currentGroup);
+    });
+  });
+
+  // ── CUSTOM ACTION INPUT ───────────────────────────────────────
+  document.getElementById('custom-action-btn').addEventListener('click', () => {
+    const val = document.getElementById('custom-action-input').value.trim();
+    if(val) selectAction(val, null);
+  });
+  document.getElementById('custom-action-input').addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      const val = e.target.value.trim();
+      if(val) selectAction(val, null);
+    }
+  });
+
+  // ── LIVE VOLUME ───────────────────────────────────────────────
+  const iW = document.getElementById('input-weight');
+  const iR = document.getElementById('input-reps');
+  const iS = document.getElementById('input-sets');
+  function calcVol() {
+    const v = ((parseFloat(iW.value)||0)*(parseInt(iR.value)||0)*(parseInt(iS.value)||0)/1000);
+    document.getElementById('live-volume').innerHTML =
+      `${v.toFixed(2)} <span class="text-sm font-normal text-on-surface-variant">Tons</span>`;
+  }
+  [iW,iR,iS].forEach(i => i.addEventListener('input', calcVol));
+
+  // ── RPE ───────────────────────────────────────────────────────
+  const rpeSlider = document.getElementById('slider-rpe');
+  const rpeLabels = {5:'很轻松',6:'有余力',7:'还能做3个',8:'还能再做2个',9:'极限边缘',10:'完全力竭'};
+  rpeSlider.addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    document.getElementById('val-rpe').textContent = v;
+    document.getElementById('rpe-label').textContent = rpeLabels[Math.round(v)] || '';
+  });
+
+  // ── TODAY'S LOG DISPLAY ───────────────────────────────────────
+  function renderTodayLog() {
+    const today = new Date().toDateString();
+    const todayRecs = records.filter(r => new Date(r.date).toDateString() === today);
+    const section = document.getElementById('today-log-section');
+    const logDiv = document.getElementById('today-log');
+    const countEl = document.getElementById('today-count');
+
+    if(todayRecs.length === 0) { section.classList.add('hidden'); return; }
+    section.classList.remove('hidden');
+    countEl.textContent = `${todayRecs.length} 项`;
+    logDiv.innerHTML = '';
+    todayRecs.slice().reverse().forEach(r => {
+      const vol = (r.volume/1000).toFixed(2);
+      const time = new Date(r.date).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+      const el = document.createElement('div');
+      el.className = 'flex items-center justify-between bg-surface-container-low rounded-lg px-4 py-3 border border-white/5';
+      el.innerHTML = `
+        <div>
+          <span class="font-bold text-sm text-on-surface">${r.action}</span>
+          <span class="text-[10px] text-on-surface-variant ml-2">${time}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-sm font-headline font-bold text-primary">${r.weight}KG × ${r.reps}次 × ${r.sets}组</span>
+          <span class="text-[10px] text-tertiary-container block">${vol} Tons</span>
+        </div>`;
+      logDiv.appendChild(el);
+    });
+  }
+
+  // ── SAVE ──────────────────────────────────────────────────────
+  document.getElementById('save-btn').addEventListener('click', () => {
+    const action = currentAction || document.getElementById('custom-action-input').value.trim();
+    if(!action || !iW.value || !iR.value || !iS.value) {
+      alert('请选择或输入动作名称，并填写重量、次数、组数！');
+      return;
+    }
+    const vol = parseFloat(iW.value)*parseInt(iR.value)*parseInt(iS.value);
+    const record = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      action,
+      group: currentGroup,
+      weight: parseFloat(iW.value),
+      reps: parseInt(iR.value),
+      sets: parseInt(iS.value),
+      rpe: parseFloat(rpeSlider.value),
+      volume: vol
+    };
+    records.push(record);
+    localStorage.setItem('gym_records', JSON.stringify(records));
+
+    const btn = document.getElementById('save-btn');
+    btn.textContent = '✓ 已记录！';
+    btn.classList.replace('bg-tertiary-container','bg-[#adc6ff]');
+    if('speechSynthesis' in window) {
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${action} 打卡成功`));
+    }
+    renderTodayLog();
+    // Reset weight for quick re-logging
+    iW.value = ''; calcVol();
+    setTimeout(()=>{
+      btn.textContent = '＋ 录入今日账本';
+      btn.classList.replace('bg-[#adc6ff]','bg-tertiary-container');
+    }, 1500);
+  });
+
+  // ── INIT ──────────────────────────────────────────────────────
+  renderChips('背');
+  renderTodayLog();
+});
+</script>
+</body>
+</html>

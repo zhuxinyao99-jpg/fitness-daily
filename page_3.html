@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DIGITAL VANGUARD - 今日训练打卡</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#122f5f",
+                        "on-tertiary-container": "#005b66",
+                        "on-secondary-fixed-variant": "#404560",
+                        "on-secondary": "#292f48",
+                        "inverse-on-surface": "#292f48",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#dde1ff",
+                        "tertiary": "#9befff",
+                        "tertiary-container": "#00daf3",
+                        "on-primary-container": "#385283",
+                        "surface-dim": "#0b1229",
+                        "surface-container-high": "#222941",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-bright": "#323851",
+                        "outline": "#8e909a",
+                        "on-surface": "#dce1ff",
+                        "surface-tint": "#adc6ff",
+                        "secondary-container": "#404560",
+                        "background": "#0b1229",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#44474f",
+                        "surface": "#0b1229",
+                        "on-secondary-fixed": "#141a32",
+                        "on-primary-fixed": "#001a42",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "secondary-fixed-dim": "#c0c5e5",
+                        "inverse-primary": "#455e90",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#001f24",
+                        "inverse-surface": "#dce1ff",
+                        "on-surface-variant": "#c4c6d0",
+                        "surface-variant": "#2d344c",
+                        "surface-container": "#181e36",
+                        "primary": "#d8e2ff",
+                        "surface-container-low": "#141a32",
+                        "surface-container-lowest": "#060d24",
+                        "on-tertiary": "#00363d",
+                        "on-background": "#dce1ff",
+                        "on-primary-fixed-variant": "#2c4677",
+                        "secondary": "#c0c5e5",
+                        "primary-container": "#adc6ff",
+                        "on-secondary-container": "#aeb4d3",
+                        "surface-container-highest": "#2d344c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0b1229;
+            color: #dce1ff;
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-card {
+            background: rgba(11, 18, 41, 0.4);
+            backdrop-filter: blur(20px);
+        }
+        .kinetic-gradient {
+            background: linear-gradient(135deg, rgba(173, 198, 255, 0.15), rgba(0, 218, 243, 0.15));
+        }
+        .neon-glow {
+            filter: drop-shadow(0 0 8px #00daf3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/60 backdrop-blur-xl shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a fit athlete with dramatic lighting and deep shadows in a high-tech gym setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLZbVehiypxF1XXuQylDfhMrZZyj0OVmZ2Ii31x2Axp9Vv4tYcyWhOGAtYy-tfHVJF0sUugl2q58aj_mhY8XND-IpqozeZagUP9TXFRfySRD_l0LffoXL2KcS5nMrTMe-o82l4ci1UfK5bk68QORacagh1mGZ0SRRBlXtzhEbgSqJIcGlB3QyragsfKPS41sDI3dNRmcLyzEeRrOdIjrW-EhDUteKW8Di04ETVQGj0lztmxgyb3FbenqpcBCjgdTotbbrUMce1JfDI"/>
+</div>
+<span class="font-['Space_Grotesk'] tracking-widest text-xl font-bold text-[#adc6ff] uppercase">DIGITAL VANGUARD</span>
+</div>
+<button class="text-[#adc6ff] hover:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Welcome & Date Header -->
+<section class="mb-10">
+<p class="font-label text-label-sm text-tertiary/70 tracking-[0.2em] uppercase mb-1">2023年10月24日 · 星期二</p>
+<h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">你好，先锋指挥官</h1>
+</section>
+<!-- Core Action Area: Kinetic Monolith -->
+<section class="relative mb-12 group">
+<div class="absolute inset-0 kinetic-gradient rounded-xl -rotate-1 scale-105 opacity-50"></div>
+<div class="relative bg-surface-container-low rounded-xl p-8 overflow-hidden shadow-[0px_24px_48px_rgba(0,229,255,0.05)] border border-outline-variant/10">
+<div class="flex justify-between items-start mb-12">
+<div>
+<h2 class="font-headline text-headline-md text-primary-fixed-dim uppercase tracking-tighter">今日训练摘要</h2>
+<p class="text-on-surface-variant text-sm mt-1">力量训练 · 下肢爆发力</p>
+</div>
+<div class="bg-tertiary-container/20 px-3 py-1 rounded-full border border-tertiary-container/30">
+<span class="text-tertiary-fixed-dim text-xs font-bold tracking-widest uppercase">READY</span>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-3 gap-4 mb-10">
+<div class="flex flex-col items-start">
+<span class="font-headline text-display-lg leading-none text-on-surface -ml-1 tracking-tighter">45</span>
+<span class="font-label text-[10px] text-primary-fixed-dim/60 uppercase tracking-widest mt-1">MIN 时长</span>
+</div>
+<div class="flex flex-col items-start">
+<span class="font-headline text-display-lg leading-none text-on-surface -ml-1 tracking-tighter">06</span>
+<span class="font-label text-[10px] text-primary-fixed-dim/60 uppercase tracking-widest mt-1">动作总数</span>
+</div>
+<div class="flex flex-col items-start">
+<span class="font-headline text-display-lg leading-none text-on-surface -ml-1 tracking-tighter">420</span>
+<span class="font-label text-[10px] text-primary-fixed-dim/60 uppercase tracking-widest mt-1">KCAL 预计消耗</span>
+</div>
+</div>
+<!-- Primary Action Trigger -->
+<button class="w-full bg-primary-container text-on-primary py-5 rounded-lg font-bold text-lg tracking-widest transition-all active:scale-95 shadow-[0_0_20px_rgba(173,198,255,0.3)] flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">play_circle</span>
+                    开始打卡训练
+                </button>
+</div>
+</section>
+<!-- Plan List: Bento Style -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl text-primary-fixed uppercase tracking-tight">具体训练计划</h3>
+<span class="text-xs text-on-surface-variant font-medium">LEG DAY · PHASE 2</span>
+</div>
+<div class="space-y-4">
+<!-- Exercise Card 1 -->
+<div class="bg-surface-container-high rounded-lg p-5 flex items-center justify-between border-l-4 border-tertiary group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div>
+<h4 class="font-body font-bold text-on-surface">杠铃深蹲</h4>
+<p class="text-on-surface-variant text-xs mt-1">4 组 x 12 次 · 80kg</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-tertiary transition-colors">chevron_right</span>
+</div>
+<!-- Exercise Card 2 -->
+<div class="bg-surface-container-high rounded-lg p-5 flex items-center justify-between border-l-4 border-primary-container group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">sports_gymnastics</span>
+</div>
+<div>
+<h4 class="font-body font-bold text-on-surface">腿举</h4>
+<p class="text-on-surface-variant text-xs mt-1">3 组 x 15 次 · 120kg</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary-container transition-colors">chevron_right</span>
+</div>
+<!-- Exercise Card 3 (Empty State/Preview) -->
+<div class="bg-surface-container-low/50 rounded-lg p-5 flex items-center border border-dashed border-outline-variant/30 opacity-60">
+<div class="w-12 h-12 rounded-full flex items-center justify-center text-outline-variant">
+<span class="material-symbols-outlined">more_horiz</span>
+</div>
+<div class="ml-4">
+<p class="text-on-surface-variant text-sm italic">还有 4 个动作待解锁...</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Motivational Hero Card -->
+<section class="mt-12">
+<div class="relative h-40 rounded-xl overflow-hidden group">
+<img alt="Training Motivation" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Low angle wide shot of a futuristic dark gym with cyan neon accents and professional equipment in the shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA00oTJD_pFqvjMMFYuWKtnFP9Sad3K_YU1yLNOI0CavknpT-q5sAuMIiIWi_lt7kEAFL13f31sEiCbIw6fhaIle4Bd2p_M5H56C7mh55CJuIKtERUSRMReyECGMC7sH0bmhNJ2VCUxNpZjk7zZG_N-I86p4xk50bDG0RjPOun1bDGCREev9I6NFLvFDfJPGoaLEf1PiAfFV3lwKehr7RFc1IiKS-6_JsBl9qUp2myJwdcAwkFHMsMa8Vilp7g-PCSdN6LHvn24LD8A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0b1229] via-[#0b1229]/20 to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<p class="text-tertiary-fixed font-bold tracking-widest text-xs uppercase mb-1">今日格言</p>
+<p class="text-on-surface text-lg font-headline font-medium">数据不会说谎，汗水即是勋章。</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/40 backdrop-blur-2xl rounded-t-[3rem] shadow-[0px_-12px_32px_rgba(0,229,255,0.05)]">
+<!-- 记录 - Active -->
+<a class="flex flex-col items-center justify-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#00daf3]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">记录</span>
+</a>
+<!-- 统计 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">统计</span>
+</a>
+<!-- 教练 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">教练</span>
+</a>
+<!-- 日程 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">日程</span>
+</a>
+<!-- 专项 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">sports_tennis</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">专项</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#122f5f",
+                        "on-tertiary-container": "#005b66",
+                        "on-secondary-fixed-variant": "#404560",
+                        "on-secondary": "#292f48",
+                        "inverse-on-surface": "#292f48",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#dde1ff",
+                        "tertiary": "#9befff",
+                        "tertiary-container": "#00daf3",
+                        "on-primary-container": "#385283",
+                        "surface-dim": "#0b1229",
+                        "surface-container-high": "#222941",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-bright": "#323851",
+                        "outline": "#8e909a",
+                        "on-surface": "#dce1ff",
+                        "surface-tint": "#adc6ff",
+                        "secondary-container": "#404560",
+                        "background": "#0b1229",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#44474f",
+                        "surface": "#0b1229",
+                        "on-secondary-fixed": "#141a32",
+                        "on-primary-fixed": "#001a42",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "secondary-fixed-dim": "#c0c5e5",
+                        "inverse-primary": "#455e90",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#001f24",
+                        "inverse-surface": "#dce1ff",
+                        "on-surface-variant": "#c4c6d0",
+                        "surface-variant": "#2d344c",
+                        "surface-container": "#181e36",
+                        "primary": "#d8e2ff",
+                        "surface-container-low": "#141a32",
+                        "surface-container-lowest": "#060d24",
+                        "on-tertiary": "#00363d",
+                        "on-background": "#dce1ff",
+                        "on-primary-fixed-variant": "#2c4677",
+                        "secondary": "#c0c5e5",
+                        "primary-container": "#adc6ff",
+                        "on-secondary-container": "#aeb4d3",
+                        "surface-container-highest": "#2d344c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #0b1229; color: #dce1ff; }
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel { background: rgba(11, 18, 41, 0.4); backdrop-filter: blur(20px); }
+        .kinetic-gradient { background: linear-gradient(135deg, rgba(173, 198, 255, 0.15), rgba(0, 218, 243, 0.15)); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/60 backdrop-blur-xl shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center border border-primary/20 overflow-hidden">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional athlete with focused expression, cool cinematic lighting, neon blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo0S-2TgBuGVTcZzlD-0iJY9vFyOBdT_xZmNWJ9RYWhHWNe1m4euTH02UPJ4mCg7fLFrcFxJlguXtqnoQvS1nIffHd9mhDAAkEgFJF20tyxWkne483l8X3a0fOn1YmKIz54gq3p74Pf5oCydp117of8UaSz2MuWxIeVs_1hqIXmosIcos4b40guR5mc_YdTSiL5-eRhJbt27JmN7MMJ1ug9wXh0QZ_NgL5KBHNRkf4kMN2g4W3T5TFfZiufq2foUfz7_axvospn83h"/>
+</div>
+<span class="text-xl font-bold tracking-widest text-[#adc6ff] font-['Space_Grotesk'] tracking-tighter uppercase">DIGITAL VANGUARD</span>
+</div>
+<div class="flex items-center gap-4 text-[#adc6ff]">
+<button class="material-symbols-outlined hover:scale-95 transition-transform">notifications</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+<!-- Hero Section: Badminton AI Insight -->
+<section class="relative mb-12 rounded-xl overflow-hidden min-h-[320px] flex flex-col justify-end p-8 kinetic-gradient">
+<div class="absolute inset-0 z-0">
+<img alt="Badminton smash" class="w-full h-full object-cover opacity-40" data-alt="Kinetic shot of a badminton player jumping for a smash in a dark stadium with dramatic cyan and violet lighting trails" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbHIcvS-bhgEJbp2dhp2HwTYHqLr61dn7abyoDF73wpH0pSH3IQBsw_mnKWIQ3fdt6Aonhiektj-28O8rvgaNEqoX0YfjBl8xJ91WKgR5WKSWb5oM3_llxIuSkC_EdQL_caoR7DulzbtN4M_ggZCf3Wgr-Q7c3E0wv6AyUPF7KUT5vBBiM37TcKTPTwuh8y-MksXk_oSRgQYGcDo9m3W4O-exXes9rCOTSAx6PML8gCYNPeb_pAbJE_WjQOky5Zdrh6KcRNp0mlf1F"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10">
+<h2 class="text-label-sm font-bold uppercase tracking-[0.3em] text-tertiary mb-2">BADMINTON SPECIALIST</h2>
+<h1 class="text-[3.5rem] font-headline font-bold leading-none tracking-tighter text-primary mb-4 drop-shadow-[0_0_15px_rgba(173,198,255,0.4)]">羽毛球专项 AI 洞察</h1>
+<p class="text-body-md text-on-surface-variant max-w-lg">利用量子级运动数据分析，将健身房的基础力量转化为球场上的统治级表现。</p>
+</div>
+</section>
+<!-- Bento Grid: Analytics & Performance -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<!-- Training Analysis Card -->
+<div class="md:col-span-2 rounded-lg bg-surface-container-low p-8 relative overflow-hidden flex flex-col justify-between">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="font-headline text-headline-md text-primary mb-1">今日健身房训练分析</h3>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Strength to Power Conversion</p>
+</div>
+<div class="bg-tertiary-container/20 px-4 py-2 rounded-full">
+<span class="text-tertiary font-headline font-bold text-xl">+15%</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container-high rounded-lg p-6 hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-tertiary mb-4" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<div class="text-headline-md font-headline text-primary">深蹲</div>
+<div class="text-label-sm text-on-surface-variant mt-2">核心稳定性 &amp; 起跳基石</div>
+</div>
+<div class="bg-surface-container-high rounded-lg p-6 hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-tertiary mb-4" style="font-variation-settings: 'FILL' 1;">directions_run</span>
+<div class="text-headline-md font-headline text-primary">箭步蹲</div>
+<div class="text-label-sm text-on-surface-variant mt-2">前场跨步支撑 &amp; 动态平衡</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-white/5">
+<p class="text-on-surface text-sm italic">“分析显示：你目前的下肢力量增长将直接提升羽毛球瞬时爆发力约 15%。”</p>
+</div>
+</div>
+<!-- Court Conversion Suggestion -->
+<div class="rounded-lg bg-surface-container-high p-8 flex flex-col">
+<h3 class="font-headline text-title-lg text-primary mb-6">球场表现转化建议</h3>
+<div class="space-y-6 flex-grow">
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary">vertical_align_top</span>
+</div>
+<div>
+<div class="font-bold text-on-surface">后场起跳扣杀</div>
+<div class="text-xs text-on-surface-variant">由深蹲产生的垂直动能转化</div>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary">double_arrow</span>
+</div>
+<div>
+<div class="font-bold text-on-surface">前场推扑与回动</div>
+<div class="text-xs text-on-surface-variant">箭步蹲强化的单腿制动与蹬伸</div>
+</div>
+</div>
+<div class="mt-8">
+<img alt="Badminton player movement" class="w-full h-32 object-cover rounded-lg opacity-60" data-alt="Close up of high-tech athletic shoes on a professional badminton court green surface with sharp focus and cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDolX60EBrrAuGZvcokQxQwZSfYDmIKidFSjL7xae98JOQ7HKOyD_qSOowY9it13rRGTEgy6e59YWoVYVBZRs0Bp0aFTzMuacY8K5EXQ9Qs3jgc_mOgwQ5VvrltbdfMcfBIERh_phjkGJRgdhmnSk8zjhAMC5IpDWKMmuyuVgdvysjveVq6gaAko7IpF43obAVxfiDQPr8uJRGX5_rmbNUYOHPARoKax7ES6saxvUf0YhJ70lVAi_oJYIa29OG8QLezbfCBihyCpspH"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Call to Action -->
+<section class="bg-primary-container rounded-xl p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="text-center md:text-left">
+<h2 class="text-headline-md font-headline font-bold text-on-primary-container mb-2">准备好上场了吗</h2>
+<p class="text-on-primary-container/80">根据今日状态，已为你定制了 15 分钟专项热身序列</p>
+</div>
+<button class="bg-[#0b1229] text-primary px-12 py-5 rounded-full font-bold text-lg hover:scale-95 transition-transform flex items-center gap-3 active:scale-90 duration-150">
+<span>开始热身</span>
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/40 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(0,229,255,0.05)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">记录</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">统计</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">教练</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">日程</span>
+</div>
+<!-- Active Item: 专项 -->
+<div class="flex flex-col items-center justify-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#00daf3] cursor-pointer">
+<span class="material-symbols-outlined" data-icon="sports_tennis" style="font-variation-settings: 'FILL' 1;">sports_tennis</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">专项</span>
+</div>
+</nav>
+</body></html>

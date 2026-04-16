@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>eric的健身助手</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#122f5f",
+                        "on-tertiary-container": "#005b66",
+                        "on-secondary-fixed-variant": "#404560",
+                        "on-secondary": "#292f48",
+                        "inverse-on-surface": "#292f48",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#dde1ff",
+                        "tertiary": "#9befff",
+                        "tertiary-container": "#00daf3",
+                        "on-primary-container": "#385283",
+                        "surface-dim": "#0b1229",
+                        "surface-container-high": "#222941",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-bright": "#323851",
+                        "outline": "#8e909a",
+                        "on-surface": "#dce1ff",
+                        "surface-tint": "#adc6ff",
+                        "secondary-container": "#404560",
+                        "background": "#0b1229",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#44474f",
+                        "surface": "#0b1229",
+                        "on-secondary-fixed": "#141a32",
+                        "on-primary-fixed": "#001a42",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "secondary-fixed-dim": "#c0c5e5",
+                        "inverse-primary": "#455e90",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#001f24",
+                        "inverse-surface": "#dce1ff",
+                        "on-surface-variant": "#c4c6d0",
+                        "surface-variant": "#2d344c",
+                        "surface-container": "#181e36",
+                        "primary": "#d8e2ff",
+                        "surface-container-low": "#141a32",
+                        "surface-container-lowest": "#060d24",
+                        "on-tertiary": "#00363d",
+                        "on-background": "#dce1ff",
+                        "on-primary-fixed-variant": "#2c4677",
+                        "secondary": "#c0c5e5",
+                        "primary-container": "#adc6ff",
+                        "on-secondary-container": "#aeb4d3",
+                        "surface-container-highest": "#2d344c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(11, 18, 41, 0.4);
+            backdrop-filter: blur(20px);
+        }
+        .kinetic-glow {
+            filter: drop-shadow(0 0 12px #00daf3);
+        }
+        .neon-stroke {
+            background: linear-gradient(90deg, #adc6ff 0%, #00daf3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="eric的健身助手">
+  </head>
+<body class="bg-background text-on-surface font-body min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/60 backdrop-blur-xl shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container/30">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a futuristic athlete with neon lighting accents on skin and cybernetic visor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3LHJoZU9nCzPzUUBLDIE1ja5rwLproh6JhImJ0w6FBiOWLjeEhKpOEj_TYGHWsFpgSKegC1GcseDmti1GKR9xSU5ClHc3Mhhl4pPihQ6ILjYoSm1bWuDiP-Z3JrVcILGo88hC7r3G6b_saofJ5FkmdeJEOjfwVhWtaHCsFUQgBxLRqADpjYqQ1QVzg05McDG9sxVIqOU12A4TTe8eVEA-YbZb9scU9y-Azn2KkKdy4LwjPSxCiALJcJjSuSE1RHT4WmGiOlyws-m3"/>
+</div>
+<span class="font-headline tracking-tighter uppercase text-xl font-bold tracking-widest text-[#adc6ff]">eric的健身助手</span>
+</div>
+<button class="text-[#adc6ff] hover:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-6 space-y-8 max-w-lg mx-auto">
+<!-- Timer Section (The Kinetic Monolith) -->
+<section class="relative text-center py-10">
+<div class="absolute inset-0 bg-gradient-to-b from-tertiary-container/10 to-transparent blur-3xl rounded-full -z-10"></div>
+<div class="flex flex-col items-center">
+<span class="font-headline text-label-sm uppercase tracking-[0.4em] text-tertiary-fixed-dim mb-2">ELAPSED TIME</span>
+<h1 class="font-headline text-[5rem] md:text-[7rem] leading-none font-bold tracking-tighter kinetic-glow text-primary-fixed-dim drop-shadow-[0_0_15px_#00daf3]">
+                    00:42
+                </h1>
+<div class="mt-6 inline-flex items-center gap-4 bg-surface-container-high px-8 py-3 rounded-full">
+<span class="text-on-surface-variant font-medium tracking-widest uppercase text-xs">Session</span>
+<span class="font-headline text-2xl font-bold text-tertiary-container">03<span class="text-on-surface-variant/30 mx-1">/</span>05</span>
+</div>
+</div>
+</section>
+<!-- BGM Controller -->
+<section class="space-y-4">
+<div class="flex justify-between items-end mb-2">
+<h2 class="font-headline text-headline-md font-bold text-primary italic uppercase">BGM 节拍控制</h2>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="font-headline text-2xl font-bold">128</span>
+<span class="text-[10px] font-bold tracking-tighter uppercase">BPM</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl space-y-6">
+<!-- Tempo Slider -->
+<div class="relative h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-[65%] bg-tertiary kinetic-glow"></div>
+</div>
+<!-- Playlist -->
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center gap-3 p-3 rounded-lg bg-tertiary-container/20 border border-tertiary-container/30 text-tertiary shadow-[0_0_12px_#00daf344]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+<span class="text-xs font-bold tracking-wider">赛博律动</span>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm">nightlight</span>
+<span class="text-xs font-bold tracking-wider">霓虹滑行</span>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="text-xs font-bold tracking-wider">高压电波</span>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm">waves</span>
+<span class="text-xs font-bold tracking-wider">极光深空</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Footwork Guide (Asymmetric Bento) -->
+<section class="space-y-4">
+<h2 class="font-headline text-headline-md font-bold text-primary italic uppercase text-right">步伐指引图</h2>
+<div class="grid grid-cols-12 gap-4">
+<div class="col-span-8 bg-surface-container-low rounded-xl p-4 overflow-hidden relative min-h-[160px]">
+<div class="absolute top-4 left-4 z-10">
+<span class="text-[10px] bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded-full font-bold uppercase">Active Pattern</span>
+<p class="text-on-surface font-bold mt-1 text-sm">Z字形位移步</p>
+</div>
+<div class="absolute inset-0 opacity-40">
+<div class="w-full h-full" data-alt="abstract architectural blueprint of geometric lines glowing in cyan on dark blue background representing footwork patterns" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAeQ_qbY9JxHB6w0YtIWUZTdCBUstJARF_9b6aMPiw8Kc08a1JblRqJ6neJ4z0EPWcbSuQa2jeyGpwC-FVk6Yf87TCcpzCnLf1wjJpMIB6xBbjC-0msLS4h_30sODy77HDIK4Ewqa_dM6BLu-t8rD6opfjlrdaI9hTQuC2O-NEhNYT-3nGcQuMCg7t-j-VEP4RJulnjqmcZrx-psyosswEDouh6hh6cIl0Urv7FaWnPyxj8aJeIg6sik8TItbv0XbQmFBZv13OX5Doq'); background-size: cover; background-position: center;"></div>
+</div>
+<div class="absolute bottom-4 right-4 flex gap-1">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary/30"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary/30"></div>
+</div>
+</div>
+<div class="col-span-4 bg-primary-container rounded-xl flex flex-col items-center justify-center text-on-primary-container p-4">
+<span class="material-symbols-outlined text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+<span class="text-[10px] font-extrabold tracking-tighter uppercase text-center leading-tight">查看<br/>演示</span>
+</div>
+</div>
+</section>
+<!-- Stats Minimalist Row -->
+<section class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-low p-4 rounded-xl">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">步伐频次</span>
+<div class="mt-1 font-headline text-xl text-primary-fixed-dim">142<span class="text-[10px] ml-1 opacity-50">/min</span></div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">重心偏离</span>
+<div class="mt-1 font-headline text-xl text-primary-fixed-dim">2.4<span class="text-[10px] ml-1 opacity-50">%</span></div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">能量消耗</span>
+<div class="mt-1 font-headline text-xl text-primary-fixed-dim">86<span class="text-[10px] ml-1 opacity-50">kcal</span></div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/40 backdrop-blur-2xl rounded-t-[3rem] shadow-[0px_-12px_32px_rgba(0,229,255,0.05)]">
+<!-- 记录 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#" onclick="alert('记录功能正在由 Eric 努力开发中！敬请期待~'); return false;">
+<span class="material-symbols-outlined mb-1">edit_note</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">记录</span>
+</a>
+<!-- 统计 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="page_2.html">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">统计</span>
+</a>
+<!-- 教练 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#" onclick="alert('教练功能开发中！'); return false;">
+<span class="material-symbols-outlined mb-1">fitness_center</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">教练</span>
+</a>
+<!-- 日程 -->
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#" onclick="alert('日程表正在排期开发中~'); return false;">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">日程</span>
+</a>
+<!-- 专项 (Active State) -->
+<a class="flex flex-col items-center justify-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#00daf3]" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">sports_tennis</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">专项</span>
+</a>
+</nav>
+<!-- Floating Play Button for focused state -->
+<div class="fixed bottom-24 right-6">
+<button class="w-16 h-16 bg-tertiary-container text-on-tertiary-container rounded-full shadow-[0px_24px_48px_rgba(0,229,255,0.3)] flex items-center justify-center hover:scale-110 active:scale-90 transition-all">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+</div>
+
+<!-- App Core Brain (Interactive JS Engine) -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Timer Logic
+        let totalSeconds = 42;
+        let isRunning = true;
+        let timerInterval = null;
+
+        const timerDisplay = document.querySelector('h1.font-headline');
+        const playPauseBtn = document.querySelector('.fixed.bottom-24.right-6 button');
+        const playPauseIcon = playPauseBtn.querySelector('span');
+
+        function formatTime(secs) {
+            const m = Math.floor(secs / 60).toString().padStart(2, '0');
+            const s = (secs % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                playPauseIcon.textContent = 'play_arrow';
+                playPauseBtn.classList.replace('bg-tertiary-container', 'bg-surface-variant');
+                playPauseBtn.classList.replace('text-on-tertiary-container', 'text-on-surface');
+            } else {
+                // Play
+                timerInterval = setInterval(() => {
+                    totalSeconds++;
+                    timerDisplay.textContent = formatTime(totalSeconds);
+                }, 1000);
+                playPauseIcon.textContent = 'pause';
+                playPauseBtn.classList.replace('bg-surface-variant', 'bg-tertiary-container');
+                playPauseBtn.classList.replace('text-on-surface', 'text-on-tertiary-container');
+            }
+            isRunning = !isRunning;
+        }
+
+        // Start initial running exactly like the UI
+        timerInterval = setInterval(() => {
+            totalSeconds++;
+            timerDisplay.textContent = formatTime(totalSeconds);
+        }, 1000);
+
+        playPauseBtn.addEventListener('click', toggleTimer);
+        
+        // 2. Playlist Interaction
+        const musicButtons = document.querySelectorAll('.grid.grid-cols-2 button');
+        musicButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                musicButtons.forEach(b => {
+                    b.classList.remove('bg-tertiary-container/20', 'border', 'border-tertiary-container/30', 'text-tertiary', 'shadow-[0_0_12px_#00daf344]');
+                    b.classList.add('bg-surface-container-highest/50', 'text-on-surface-variant');
+                    b.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+                });
+                this.classList.remove('bg-surface-container-highest/50', 'text-on-surface-variant');
+                this.classList.add('bg-tertiary-container/20', 'border', 'border-tertiary-container/30', 'text-tertiary', 'shadow-[0_0_12px_#00daf344]');
+                this.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+    });
+</script>
+</body></html>

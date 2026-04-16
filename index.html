@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Eric的健身助手</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#B5E18B",
+                        "primary-fixed-dim": "#B5E18B",
+                        "tertiary": "#F0FFC2",
+                        "tertiary-container": "#B5E18B",
+                        "on-tertiary-container": "#28396C",
+                        "background": "#28396C",
+                        "surface": "#28396C",
+                        "surface-container-low": "rgba(234,230,188,0.08)",
+                        "surface-container": "rgba(234,230,188,0.12)",
+                        "surface-container-high": "rgba(234,230,188,0.18)",
+                        "surface-container-highest": "rgba(234,230,188,0.22)",
+                        "on-surface": "#F0FFC2",
+                        "on-surface-variant": "#EAE6BC",
+                        "primary-container": "#EAE6BC",
+                        "on-primary-container": "#28396C",
+                        "error": "#ffb4ab",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { min-height: max(884px, 100dvh); background-color: #28396C; color: #F0FFC2; }
+        
+        .app-page { transition: opacity 0.2s ease-in-out; }
+        
+        /* Muscle group colours synchronized with palette */
+        :root {
+            --c-背: #B5E18B; --bg-背: rgba(181, 225, 139, 0.18);
+            --c-胸: #ffb4ab; --bg-胸: rgba(255, 180, 171, 0.18);
+            --c-腿: #F0FFC2; --bg-腿: rgba(240, 255, 194, 0.18);
+            --c-肩: #EAE6BC; --bg-肩: rgba(234, 230, 188, 0.18);
+            --c-手臂: #d8e2ff; --bg-手臂:rgba(216, 226, 255, 0.18);
+            --c-其他: #a8cf80; --bg-其他:rgba(168, 207, 128, 0.18);
+        }
+        .g-背   {color:var(--c-背);  background:var(--bg-背);  border-color:var(--c-背)}
+        .g-胸   {color:var(--c-胸);  background:var(--bg-胸);  border-color:var(--c-胸)}
+        .g-腿   {color:var(--c-腿);  background:var(--bg-腿);  border-color:var(--c-腿)}
+        .g-肩   {color:var(--c-肩);  background:var(--bg-肩);  border-color:var(--c-肩)}
+        .g-手臂 {color:var(--c-手臂);background:var(--bg-手臂);border-color:var(--c-手臂)}
+        .g-其他 {color:var(--c-其他);background:var(--bg-其他);border-color:var(--c-其他)}
+
+        .cal-day { min-height:60px; border-radius:10px; padding:4px 3px 3px; display:flex; flex-direction:column; align-items:center; gap:2px; transition: transform .15s; border: 1px solid transparent; }
+        .cal-day.has-data { cursor:pointer; }
+        .cal-day.has-data:active { transform:scale(.95); }
+        .cal-day.is-today { border-color:#B5E18B !important; background:rgba(181, 225, 139,.05); }
+        .cal-day-num { font-size:11px; font-weight:700; line-height:1; font-family:'Space Grotesk',sans-serif; }
+        .cal-badge { font-size:9px; font-weight:800; padding:1px 4px; border-radius:4px; border-width:1px; border-style:solid; line-height:1.4; letter-spacing:.02em; text-align:center; }
+        
+        .tab-active { background:rgba(181, 225, 139, 0.15); color:#B5E18B; border-color:#B5E18B; }
+        .tab-inactive { background:transparent; color:#EAE6BC; border-color:transparent; }
+        .action-selected { background:rgba(181, 225, 139, 0.15); color:#B5E18B; border-color:#B5E18B; }
+        .action-unselected { background:rgba(234, 230, 188, 0.1); color:#EAE6BC; border-color:transparent; }
+        
+        input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="font-body pb-32">
+
+<!-- COMMON NAVIGATION -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#28396C]/80 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(181,225,139,0.05)] rounded-t-[3rem]">
+    <button onclick="navTo('record')" class="w-16 flex flex-col items-center justify-center nav-btn transition-colors text-primary bg-primary/20 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#B5E18B]" id="nav-record">
+        <span class="material-symbols-outlined mb-1">edit_note</span>
+        <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">打卡</span>
+    </button>
+    <button onclick="navTo('stats')" class="w-16 flex flex-col items-center justify-center nav-btn transition-colors text-[#EAE6BC]/50" id="nav-stats">
+        <span class="material-symbols-outlined mb-1">insights</span>
+        <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">统计</span>
+    </button>
+    <button onclick="navTo('schedule')" class="w-16 flex flex-col items-center justify-center nav-btn transition-colors text-[#EAE6BC]/50" id="nav-schedule">
+        <span class="material-symbols-outlined mb-1">calendar_today</span>
+        <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">日历</span>
+    </button>
+    <button onclick="navTo('index')" class="w-16 flex flex-col items-center justify-center nav-btn transition-colors text-[#EAE6BC]/50" id="nav-index">
+        <span class="material-symbols-outlined mb-1">sports_tennis</span>
+        <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">专项</span>
+    </button>
+</nav>
+
+<!-- PLAY TIMER BTN FOR BADMINTON -->
+<div id="toggle-training-btn-container" class="fixed bottom-24 right-6 z-50 hidden">
+  <button id="toggle-training-btn" class="w-16 h-16 bg-primary text-[#28396C] rounded-full shadow-[0px_12px_24px_rgba(181,225,139,0.4)] flex items-center justify-center hover:scale-110 active:scale-90 transition-all">
+    <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+  </button>
+</div>
+
+<!-- ============================================== -->
+<!-- PAGE: RECORD -->
+<div id="page-record" class="app-page block">
+  <header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 bg-[#28396C]/90 backdrop-blur-xl border-b border-[#EAE6BC]/10">
+    <span class="font-headline text-lg font-bold text-[#F0FFC2]">力量训练打卡</span>
+    <span class="text-xs text-[#EAE6BC] font-medium" id="date-display"></span>
+  </header>
+  <main class="pt-20 px-4 max-w-lg mx-auto space-y-5">
+      <section>
+        <p class="text-[10px] font-bold text-[#EAE6BC] uppercase tracking-widest mb-2 ml-1">选择训练部位</p>
+        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="muscle-tabs">
+          <button class="muscle-tab tab-active flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="背">🔙 背</button>
+          <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="胸">💪 胸</button>
+          <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="腿">🦵 腿</button>
+          <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="肩">🔝 肩</button>
+          <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="手臂">💪 手臂</button>
+          <button class="muscle-tab tab-inactive flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all" data-group="其他">✨ 其他</button>
+        </div>
+      </section>
+
+      <section class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10">
+        <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">快速选择动作</p>
+        <div class="flex flex-wrap gap-2 mb-3" id="action-chips"></div>
+        <div class="flex gap-2 mt-2">
+          <input type="text" id="custom-action-input" placeholder="或自己输入动作名称…" class="flex-1 bg-surface-container-highest border border-[#EAE6BC]/20 rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary transition-all placeholder:text-[#EAE6BC]/50"/>
+          <button id="custom-action-btn" class="px-3 py-2 rounded-lg bg-primary/20 text-primary border border-primary/50 text-sm font-bold hover:bg-primary/40 transition-all">确认</button>
+        </div>
+        <div id="selected-display" class="mt-3 hidden">
+          <span class="text-[10px] text-on-surface-variant uppercase tracking-widest">当前选中：</span>
+          <span id="selected-action-name" class="text-primary font-bold text-sm"></span>
+        </div>
+      </section>
+
+      <section class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10 space-y-4">
+        <div class="grid grid-cols-3 gap-3">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">负重 KG</label>
+            <input type="number" id="input-weight" placeholder="25" class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-primary outline-none transition-all"/>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">单组次数</label>
+            <input type="number" id="input-reps" placeholder="10" class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-primary outline-none transition-all"/>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-on-surface-variant uppercase text-center">完成组数</label>
+            <input type="number" id="input-sets" placeholder="4" class="w-full bg-surface-container-highest border-none rounded-lg p-3 text-center text-2xl font-headline font-bold text-primary focus:ring-2 focus:ring-primary outline-none transition-all"/>
+          </div>
+        </div>
+        <div class="flex items-end justify-between pt-2 border-t border-[#EAE6BC]/10">
+          <div>
+            <span class="text-[10px] font-bold text-on-surface-variant uppercase">本项总容量</span>
+            <div id="live-volume" class="text-3xl font-headline font-bold text-primary">0.0 <span class="text-sm font-normal text-on-surface-variant">Tons</span></div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold text-on-surface-variant uppercase">RPE</span>
+            <div id="val-rpe" class="text-xl font-headline font-bold text-error">8.0</div>
+          </div>
+        </div>
+        <input type="range" id="slider-rpe" min="5" max="10" value="8" step="0.5" class="w-full accent-error h-1.5 bg-surface-container-highest rounded-full appearance-none cursor-pointer"/>
+        <p id="rpe-label" class="text-xs text-on-surface-variant text-right -mt-1">还能再做2个</p>
+      </section>
+
+      <button id="save-btn" class="w-full py-4 rounded-xl bg-primary text-on-tertiary-container font-headline font-bold text-lg tracking-widest shadow-[0_0_20px_rgba(181,225,139,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-transform">
+        ＋ 录入今日账本
+      </button>
+
+      <section id="today-log-section" class="hidden pb-8 mt-6">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">今日已记录</p>
+          <span id="today-count" class="text-tertiary text-xs font-bold"></span>
+        </div>
+        <div id="today-log" class="space-y-2"></div>
+      </section>
+  </main>
+</div>
+
+<!-- ============================================== -->
+<!-- PAGE: STATS -->
+<div id="page-stats" class="app-page hidden">
+  <header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 bg-[#28396C]/90 backdrop-blur-xl shadow-[0px_24px_48px_rgba(181,225,139,0.05)] border-b border-[#EAE6BC]/10">
+    <div class="text-xl font-bold tracking-widest text-[#F0FFC2] font-headline uppercase">Analytics</div>
+  </header>
+  <main class="pt-24 px-6 max-w-5xl mx-auto space-y-8 pb-12">
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <span class="text-primary font-headline font-bold uppercase tracking-[0.2em] text-xs">Vanguard Analytics</span>
+        <h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tighter text-[#F0FFC2] mt-2">训练数据分析</h1>
+      </div>
+      <div class="flex gap-2">
+        <button id="btn-stats-filter" class="bg-surface-container-high px-4 py-2 rounded-full text-sm font-bold text-on-surface hover:scale-95 transition-transform">近 7 天</button>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="md:col-span-1 bg-surface-container-highest/30 p-8 rounded-lg flex flex-col items-center justify-center relative overflow-hidden border border-[#EAE6BC]/10">
+        <span class="absolute top-6 left-6 text-xs font-bold text-on-surface-variant uppercase tracking-widest">恢复评分</span>
+        <div class="relative w-48 h-48 flex items-center justify-center mt-4">
+          <svg class="w-full h-full -rotate-90">
+            <circle class="text-surface-container" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="8"></circle>
+            <circle class="text-primary drop-shadow-[0_0_8px_#B5E18B]" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.4" stroke-dashoffset="100.4" stroke-linecap="round" stroke-width="12"></circle>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-5xl font-headline font-bold text-primary">82</span>
+            <span class="text-[10px] font-bold text-[#F0FFC2] uppercase tracking-widest">优良状态</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 bg-surface-container-highest/30 p-8 rounded-lg flex flex-col border border-[#EAE6BC]/10">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h2 class="font-headline text-xl font-bold text-[#F0FFC2] tracking-tight">每日总做组容量趋势</h2>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-on-surface-variant uppercase block">最高容量</span>
+            <span class="text-2xl font-headline font-bold text-primary" id="total-volume-display">0 Tons</span>
+          </div>
+        </div>
+        <div class="h-52 w-full relative">
+          <canvas id="volumeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <section class="bg-surface-container-highest/30 border border-[#EAE6BC]/10 p-8 rounded-lg">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-xl font-headline font-bold text-[#F0FFC2] tracking-tight">极限重量(1RM)演进</h2>
+        <div class="text-right">
+          <span class="text-xs font-bold text-on-surface-variant uppercase block">突破上限</span>
+          <span class="text-2xl font-headline font-bold text-primary" id="current-smash-display">加载中</span>
+        </div>
+      </div>
+      <div class="relative h-64 w-full">
+          <canvas id="weightChart"></canvas>
+      </div>
+    </section>
+
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-headline font-bold text-[#F0FFC2] tracking-tight">💪 进步最快动作榜</h2>
+        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">重量提升 TOP 4</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="pr-wall">
+        <div class="col-span-2 md:col-span-4 text-center text-on-surface-variant py-8" id="pr-placeholder">数据加载中...</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============================================== -->
+<!-- PAGE: SCHEDULE -->
+<div id="page-schedule" class="app-page hidden">
+  <header class="fixed top-0 w-full z-40 flex justify-between items-center px-5 h-16 bg-[#28396C]/90 backdrop-blur-xl border-b border-[#EAE6BC]/10">
+    <span class="font-headline text-lg font-bold text-[#F0FFC2]">训练日历</span>
+    <div class="flex items-center gap-2">
+      <button id="prev-month" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined text-sm">chevron_left</span>
+      </button>
+      <span id="month-label" class="text-sm font-bold text-[#F0FFC2] font-headline min-w-[72px] text-center"></span>
+      <button id="next-month" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+      </button>
+    </div>
+  </header>
+  <main class="pt-20 px-4 max-w-lg mx-auto space-y-4 pb-12">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10 text-center">
+        <div class="text-3xl font-headline font-bold text-primary" id="streak-count">0</div>
+        <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">🔥 连续天</div>
+      </div>
+      <div class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10 text-center">
+        <div class="text-3xl font-headline font-bold text-tertiary" id="month-count">0</div>
+        <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">本月打卡</div>
+      </div>
+      <div class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10 text-center">
+        <div class="text-3xl font-headline font-bold text-error" id="rest-days">0</div>
+        <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">休息天</div>
+      </div>
+    </div>
+
+    <div class="rounded-xl p-4 border border-[#EAE6BC]/10 bg-surface-container-low space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">今日训练</span>
+      </div>
+      <div id="today-content"></div>
+    </div>
+
+    <div class="bg-surface-container-high rounded-xl p-4 border border-primary/30">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">psychology</span>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">智能推荐 · 下次训练</p>
+          <p class="text-sm font-bold text-[#F0FFC2]" id="suggestion-text">分析中...</p>
+          <p class="text-[10px] text-[#EAE6BC] mt-1" id="suggestion-reason"></p>
+        </div>
+      </div>
+    </div>
+
+    <section class="bg-surface-container-low rounded-xl p-3 border border-[#EAE6BC]/10">
+      <div class="grid grid-cols-7 mb-1 gap-1">
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">日</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">一</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">二</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">三</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">四</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">五</div>
+        <div class="text-center text-[10px] font-bold text-[#EAE6BC] py-1">六</div>
+      </div>
+      <div class="grid grid-cols-7 gap-1" id="calendar-grid"></div>
+    </section>
+    
+    <div class="flex flex-wrap gap-x-4 gap-y-2 px-1">
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-背 border"></div><span class="text-[10px] text-on-surface-variant">背</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-胸 border"></div><span class="text-[10px] text-on-surface-variant">胸</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-腿 border"></div><span class="text-[10px] text-on-surface-variant">腿</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-肩 border"></div><span class="text-[10px] text-on-surface-variant">肩</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-手臂 border"></div><span class="text-[10px] text-on-surface-variant">手臂</span></div>
+    </div>
+
+    <section class="bg-surface-container-low rounded-xl p-4 border border-[#EAE6BC]/10">
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">本月各部位频次</p>
+      <div id="freq-bars" class="space-y-3"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============================================== -->
+<!-- PAGE: BADMINTON (INDEX) -->
+<div id="page-index" class="app-page hidden">
+  <header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 bg-[#28396C]/60 backdrop-blur-xl border-b border-[#EAE6BC]/10">
+    <span class="font-headline tracking-tighter uppercase text-xl font-bold tracking-widest text-[#F0FFC2]">专项步法挑战</span>
+  </header>
+  <main class="pt-24 px-6 space-y-8 max-w-lg mx-auto pb-12">
+    <section class="relative text-center py-10">
+      <div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent blur-3xl rounded-full -z-10"></div>
+      <div class="flex flex-col items-center">
+        <span id="phase-title" class="font-headline text-label-sm uppercase tracking-[0.4em] text-primary mb-2">准备开练</span>
+        <h1 id="main-timer" class="font-headline text-[5rem] md:text-[7rem] leading-none font-bold tracking-tighter text-[#F0FFC2] drop-shadow-[0_0_15px_#B5E18B]">00:30</h1>
+        <div class="mt-6 inline-flex items-center gap-4 bg-surface-container-high px-8 py-3 rounded-full border border-primary/20">
+          <span class="text-[#EAE6BC] font-medium tracking-widest uppercase text-xs">总时长剩余</span>
+          <span id="global-timer" class="font-headline text-2xl font-bold text-primary">12:00</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex justify-between items-end mb-2">
+        <h2 class="font-headline text-headline-md font-bold text-primary italic uppercase">专属 BGM 律动</h2>
+        <div class="flex items-center gap-2 text-primary">
+          <span class="font-headline text-2xl font-bold">120-145</span>
+          <span class="text-[10px] font-bold tracking-tighter uppercase">BPM</span>
+        </div>
+      </div>
+      <div class="bg-surface-container-low p-6 rounded-xl space-y-6 border border-[#EAE6BC]/10">
+        <div class="grid grid-cols-2 gap-3" id="music-buttons">
+          <button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-[#EAE6BC] hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-sm">graphic_eq</span>
+            <span class="text-xs font-bold tracking-wider">羽球热身 120</span>
+          </button>
+          <button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-[#EAE6BC] hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-sm">nightlight</span>
+            <span class="text-xs font-bold tracking-wider">赛场对抗 135</span>
+          </button>
+          <button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-[#EAE6BC] hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-sm">bolt</span>
+            <span class="text-xs font-bold tracking-wider">极限爆发 145</span>
+          </button>
+          <button class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-highest/50 text-[#EAE6BC] hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-sm">waves</span>
+            <span class="text-xs font-bold tracking-wider">心率舒缓 110</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="font-headline text-headline-md font-bold text-primary italic uppercase text-right">步伐指引图</h2>
+      <div class="bg-surface-container-low rounded-xl p-6 overflow-hidden relative min-h-[160px] flex flex-col justify-center items-center text-center border border-[#EAE6BC]/10">
+        <div class="relative z-10 w-full">
+          <span id="current-action-label" class="inline-block text-[10px] bg-primary text-on-tertiary-container px-3 py-1 rounded-full font-bold uppercase transition-colors mb-2">TRAINING</span>
+          <p id="current-action" class="text-[#F0FFC2] font-bold text-4xl md:text-5xl tracking-wide drop-shadow-md">垫步大跳</p>
+          <p id="next-action" class="text-[#EAE6BC] font-medium mt-4 text-sm">下一个动作: 开合跳</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- SHARED MODAL FOR SCHEDULE -->
+<div id="modal" class="fixed inset-0 z-[100] hidden items-end justify-center">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
+  <div class="relative w-full max-w-lg bg-[#28396C] rounded-t-3xl p-5 border-t border-[#EAE6BC]/20 pb-12" style="max-height:75vh;overflow-y:auto">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-headline font-bold text-lg text-[#F0FFC2]" id="modal-date"></h3>
+      <button id="modal-close" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+        <span class="material-symbols-outlined text-sm text-[#F0FFC2]">close</span>
+      </button>
+    </div>
+    <div id="modal-content" class="space-y-2"></div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- CORE APP JS LOGIC -->
+<script>
+// --- Data Manager ---
+const A2G={ '直臂下压':'背','坐姿划船':'背','高位下拉':'背','坐拉':'背','辅助引体':'背','坐姿下拉(左右)':'背','坐姿下拉':'背',
+            '卧推':'胸','握推':'胸','辅助下胸':'胸','上斜哑铃':'胸','下胸':'胸','辅助推走':'胸','龙门架飞鸟':'胸','飞鸟超级组':'胸','卧推组合':'胸',
+            '深蹲':'腿','坐姿髋内收':'腿','髋外展':'腿','健步蹲':'腿','弓箭蹲':'腿','髋内收':'腿',
+            '拉绳索':'肩','绳索面拉':'肩','侧平举':'肩','龙门架侧平举':'肩','反向蝴蝶':'肩','推肩(躺)':'肩','坐姿反向飞鸟':'肩',
+            '二头弯举':'手臂','锤式弯举':'手臂','三头下压':'手臂','窄距俯卧撑':'手臂'};
+function getRawRecords() {
+    let raw = JSON.parse(localStorage.getItem('gym_records') || '[]');
+    if(raw.length === 0) {
+        // Seed some starter data if brand new
+        raw=[
+            {"date":new Date().toISOString(),"action":"深蹲","group":"腿","weight":20,"sets":4,"reps":10,"volume":800,"rpe":8}
+        ];
+        localStorage.setItem('gym_records', JSON.stringify(raw));
+    }
+    return raw;
+}
+function getRecords() { return getRawRecords().map(r => ({ ...r, group: r.group || A2G[r.action] || '其他' })); }
+
+// --- NAV SYSTEM ---
+const PageModules = {};
+
+function navTo(pageId) {
+    document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+    document.getElementById('page-' + pageId).classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-primary', 'bg-primary/20', 'rounded-full', 'px-4', 'py-2', 'drop-shadow-[0_0_12px_#B5E18B]');
+        btn.classList.add('text-[#EAE6BC]/50');
+    });
+
+    const activeBtn = document.getElementById('nav-' + pageId);
+    activeBtn.classList.remove('text-[#EAE6BC]/50');
+    activeBtn.classList.add('text-primary', 'bg-primary/20', 'rounded-full', 'px-4', 'py-2', 'drop-shadow-[0_0_12px_#B5E18B]');
+
+    const timerBtn = document.getElementById('toggle-training-btn-container');
+    if(timerBtn) timerBtn.style.display = (pageId === 'index') ? 'block' : 'none';
+
+    if (PageModules[pageId] && PageModules[pageId].onEnter) {
+        PageModules[pageId].onEnter();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+// ====== MODULE: RECORD ======
+PageModules['record'] = (function() {
+    document.getElementById("date-display").textContent = new Date().toLocaleDateString('zh-CN', { month:'long', day:'numeric', weekday:'short' });
+    const library = {
+        "背": ["直臂下压","坐姿划船","高位下拉","坐拉","辅助引体","坐姿下拉(左右)"],
+        "胸": ["卧推","握推","辅助下胸","上斜哑铃","下胸","辅助推走","龙门架飞鸟","飞鸟超级组"],
+        "腿": ["深蹲","坐姿髋内收","髋外展","健步蹲","弓箭蹲","髋内收"],
+        "肩": ["拉绳索","绳索面拉","侧平举","龙门架侧平举","反向蝴蝶","推肩(躺)","坐姿反向飞鸟"],
+        "手臂": ["二头弯举","锤式弯举","三头下压","窄距俯卧撑"],
+        "其他": ["平板支撑","卷腹","俯卧撑","引体向上","波比跳"]
+    };
+    let currentGroup = "背";
+    let currentAction = "";
+
+    function renderTodayLog() {
+        const today = new Date().toDateString();
+        const records = getRecords();
+        const todayRecs = records.filter(r => new Date(r.date).toDateString() === today);
+        const section = document.getElementById('today-log-section');
+        const logDiv = document.getElementById('today-log');
+        if(todayRecs.length === 0) { section.classList.add('hidden'); return; }
+        section.classList.remove('hidden');
+        document.getElementById('today-count').textContent = `${todayRecs.length} 项`;
+        logDiv.innerHTML = '';
+        todayRecs.slice().reverse().forEach(r => {
+            const vol = (r.volume/1000).toFixed(2);
+            const time = new Date(r.date).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+            const el = document.createElement('div');
+            el.className = 'flex items-center justify-between bg-surface-container-low rounded-lg px-4 py-3 border border-[#EAE6BC]/10';
+            el.innerHTML = `<div><span class="font-bold text-sm text-[#F0FFC2]">${r.action}</span><span class="text-[10px] text-on-surface-variant ml-2">${time}</span></div>
+                            <div class="text-right"><span class="text-sm font-headline font-bold text-primary">${r.weight}KG × ${r.reps}次 × ${r.sets}组</span><span class="text-[10px] text-[#EAE6BC] block">${vol} Tons</span></div>`;
+            logDiv.appendChild(el);
+        });
+    }
+
+    function selectAction(name, btn) {
+        document.querySelectorAll('.action-chip').forEach(b => {
+            b.classList.remove('action-selected'); b.classList.add('action-unselected');
+        });
+        if(btn) btn.classList.replace('action-unselected','action-selected');
+        currentAction = name;
+        document.getElementById('selected-action-name').textContent = name;
+        document.getElementById('selected-display').classList.remove('hidden');
+        document.getElementById('custom-action-input').value = name;
+    }
+
+    function renderChips(group) {
+        const container = document.getElementById('action-chips');
+        container.innerHTML = '';
+        const records = getRecords();
+        const used = [...new Set(records.filter(r => r.group === group || r.action && library[group]?.includes(r.action)).map(r => r.action))];
+        const all = [...new Set([...(library[group] || []), ...used])];
+        all.forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = `action-chip action-unselected px-3 py-1.5 rounded-lg text-xs font-bold border transition-all`;
+            btn.textContent = name;
+            btn.addEventListener('click', () => selectAction(name, btn));
+            container.appendChild(btn);
+        });
+    }
+
+    document.querySelectorAll('.muscle-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.muscle-tab').forEach(t => t.classList.replace('tab-active','tab-inactive'));
+            tab.classList.replace('tab-inactive','tab-active');
+            currentGroup = tab.dataset.group; currentAction = '';
+            document.getElementById('selected-display').classList.add('hidden');
+            document.getElementById('custom-action-input').value = '';
+            renderChips(currentGroup);
+        });
+    });
+
+    document.getElementById('custom-action-btn').addEventListener('click', () => {
+        const val = document.getElementById('custom-action-input').value.trim();
+        if(val) selectAction(val, null);
+    });
+
+    const iW = document.getElementById('input-weight'), iR = document.getElementById('input-reps'), iS = document.getElementById('input-sets');
+    function calcVol() {
+        const v = ((parseFloat(iW.value)||0)*(parseInt(iR.value)||0)*(parseInt(iS.value)||0)/1000);
+        document.getElementById('live-volume').innerHTML = `${v.toFixed(2)} <span class="text-sm font-normal text-on-surface-variant">Tons</span>`;
+    }
+    [iW,iR,iS].forEach(i => i.addEventListener('input', calcVol));
+
+    const rpeSlider = document.getElementById('slider-rpe');
+    const rpeLabels = {5:'很轻松',6:'有余力',7:'还能做3个',8:'还能再做2个',9:'极限边缘',10:'完全力竭'};
+    rpeSlider.addEventListener('input', e => {
+        const v = parseFloat(e.target.value);
+        document.getElementById('val-rpe').textContent = v;
+        document.getElementById('rpe-label').textContent = rpeLabels[Math.round(v)] || '';
+    });
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+        const action = currentAction || document.getElementById('custom-action-input').value.trim();
+        if(!action || !iW.value || !iR.value || !iS.value) return alert('请选择或输入动作名称，并填写重量、次数、组数！');
+        const r = { id: Date.now(), date: new Date().toISOString(), action, group: currentGroup, weight: parseFloat(iW.value), reps: parseInt(iR.value), sets: parseInt(iS.value), rpe: parseFloat(rpeSlider.value), volume: (parseFloat(iW.value)*parseInt(iR.value)*parseInt(iS.value)) };
+        const raw = getRawRecords(); raw.push(r);
+        localStorage.setItem('gym_records', JSON.stringify(raw));
+
+        const btn = document.getElementById('save-btn');
+        btn.textContent = '✓ 已记录！';
+        renderTodayLog(); iW.value = ''; calcVol();
+        setTimeout(()=> btn.textContent = '＋ 录入今日账本', 1500);
+    });
+
+    renderChips('背');
+    renderTodayLog();
+    return { onEnter: renderTodayLog };
+})();
+
+// ====== MODULE: STATS ======
+PageModules['stats'] = (function() {
+    let volChart, wtChart;
+    Chart.defaults.color = '#EAE6BC';
+    Chart.defaults.font.family = "'Space Grotesk', sans-serif";
+
+    function renderStats() {
+        const records = getRecords();
+        if(!records.length) return;
+
+        const dailyVols = {}, dailyMaxWgts = {};
+        records.forEach(r => {
+            const dateKey = new Date(r.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+            dailyVols[dateKey] = (dailyVols[dateKey] || 0) + r.volume;
+            dailyMaxWgts[dateKey] = Math.max((dailyMaxWgts[dateKey] || 0), r.weight);
+        });
+
+        const uniqueDates = Object.keys(dailyVols).slice(-7);
+        const volumeData = uniqueDates.map(dk => dailyVols[dk] / 1000);
+        const weightData = uniqueDates.map(dk => dailyMaxWgts[dk]);
+        
+        document.getElementById("total-volume-display").innerHTML = `${(volumeData[volumeData.length-1]||0).toFixed(1)} <span class="text-sm font-normal text-on-surface-variant">Tons</span>`;
+        if(weightData.length) document.getElementById("current-smash-display").textContent = `${Math.max(...weightData)} KG`;
+
+        if(volChart) volChart.destroy();
+        if(wtChart) wtChart.destroy();
+
+        const ctxVol = document.getElementById('volumeChart').getContext('2d');
+        const gradVol = ctxVol.createLinearGradient(0, 0, 0, 400);
+        gradVol.addColorStop(0, 'rgba(181, 225, 139, 0.9)'); // B5E18B
+        gradVol.addColorStop(1, 'rgba(181, 225, 139, 0.1)');
+        
+        volChart = new Chart(ctxVol, {
+            type: 'bar',
+            data: { labels: uniqueDates, datasets: [{ data: volumeData, backgroundColor: gradVol, borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                       scales: { x: { grid: { display: false } }, y: { display: false, grid: { display: false } } } }
+        });
+
+        const ctxWt = document.getElementById('weightChart').getContext('2d');
+        const gradWt = ctxWt.createLinearGradient(0, 0, 0, 400);
+        gradWt.addColorStop(0, 'rgba(181, 225, 139, 0.6)');
+        gradWt.addColorStop(1, 'rgba(181, 225, 139, 0)');
+
+        wtChart = new Chart(ctxWt, {
+            type: 'line',
+            data: { labels: uniqueDates, datasets: [{ data: weightData, borderColor: '#B5E18B', backgroundColor: gradWt, borderWidth: 4, fill: true, tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                       scales: { x: { grid: { color: 'rgba(234,230,188,0.1)' } }, y: { grid: { color: 'rgba(234,230,188,0.1)' } } } }
+        });
+
+        // PR Wall
+        const actionMap = {};
+        [...records].sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(r => {
+            if (!actionMap[r.action]) actionMap[r.action] = { first: r.weight, date: r.date, latest: r.weight, count: 1 };
+            else { actionMap[r.action].latest = r.weight; actionMap[r.action].date = r.date; actionMap[r.action].count++; }
+        });
+        const improved = Object.entries(actionMap).filter(([, v]) => v.count > 1).map(([name, v]) => ({ name, gain: v.latest - v.first, latest: v.latest, first: v.first, date: v.date })).sort((a, b) => b.gain - a.gain).slice(0, 4);
+        
+        const prWall = document.getElementById('pr-wall');
+        prWall.innerHTML = '';
+        if(improved.length===0) prWall.innerHTML='<div class="col-span-2 md:col-span-4 text-center text-on-surface-variant py-8">数据加载中...</div>';
+        else {
+            improved.forEach((item, i) => {
+                const gainText = item.gain > 0 ? `+${item.gain} KG ↑` : item.gain === 0 ? '维持水平' : `${item.gain} KG`;
+                const dateStr = new Date(item.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+                const card = document.createElement('div');
+                card.className = 'bg-surface-container-low p-5 rounded-xl border border-primary/20 shadow-xl';
+                card.innerHTML = `<div class="flex items-center gap-2 mb-2"><span class="text-xl">${['🥇','🥈','🥉','🏅'][i]}</span><span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest truncate">${item.name}</span></div>
+                                  <div class="text-2xl font-headline font-bold text-primary">${item.latest} <span class="text-xs font-normal">KG</span></div>
+                                  <div class="text-sm font-bold text-[#F0FFC2] mt-1">${gainText}</div>
+                                  <div class="text-[10px] text-on-surface-variant mt-2">${item.first} → ${item.latest} KG · ${dateStr}</div>`;
+                prWall.appendChild(card);
+            });
+        }
+    }
+    return { onEnter: renderStats };
+})();
+
+// ====== MODULE: SCHEDULE ======
+PageModules['schedule'] = (function() {
+    let dayMap={}; const today=new Date(); let viewYear=today.getFullYear(), viewMonth=today.getMonth();
+    
+    function fmtKey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    
+    function buildMap() {
+        dayMap = {};
+        getRecords().forEach(r => {
+            const key = fmtKey(new Date(r.date));
+            if (!dayMap[key]) dayMap[key] = { groups: new Set(), exercises: [] };
+            dayMap[key].groups.add(r.group); dayMap[key].exercises.push(r);
+        });
+    }
+
+    function calcStreak() {
+        let streak = 0; const cursor = new Date(today);
+        if (!dayMap[fmtKey(cursor)]) cursor.setDate(cursor.getDate()-1);
+        while (dayMap[fmtKey(cursor)]) { streak++; cursor.setDate(cursor.getDate()-1); }
+        return streak;
+    }
+
+    function renderCal() {
+        document.getElementById('month-label').textContent = `${viewYear}年${viewMonth+1}月`;
+        const grid = document.getElementById('calendar-grid'); grid.innerHTML = '';
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+        const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+        for (let i=0; i<firstDay; i++) grid.appendChild(Object.assign(document.createElement('div'),{className:'cal-day'}));
+        for (let d=1; d<=daysInMonth; d++) {
+            const key = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const data = dayMap[key], isToday = (fmtKey(today)===key), isFuture = new Date(viewYear,viewMonth,d)>today;
+            const el = document.createElement('div');
+            el.className = `cal-day ${isToday?'is-today':''} ${data?'has-data':''}`;
+            if(!isFuture && !data) el.style.background = 'rgba(234,230,188,0.05)';
+            const num = document.createElement('div');
+            num.className = `cal-day-num ${isToday?'text-primary':isFuture?'text-[#EAE6BC]/30':data?'text-primary':'text-[#EAE6BC]/40'}`;
+            num.textContent = d; el.appendChild(num);
+            if(data) [...data.groups].forEach(g => {
+                const b = document.createElement('div'); b.className=`cal-badge g-${g} border`; b.textContent=g; el.appendChild(b);
+            });
+            if(data) el.addEventListener('click',()=>openModal(key,d,viewMonth+1,viewYear,data));
+            grid.appendChild(el);
+        }
+        
+        // Month stats
+        let trainDays=0, freq={};
+        const upToDay = (viewYear===today.getFullYear()&&viewMonth===today.getMonth()) ? today.getDate() : daysInMonth;
+        for (let d=1; d<=upToDay; d++) {
+            const k = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            if(dayMap[k]){ trainDays++; dayMap[k].groups.forEach(g=>freq[g]=(freq[g]||0)+1); }
+        }
+        document.getElementById('month-count').textContent = trainDays;
+        document.getElementById('rest-days').textContent = upToDay - trainDays;
+
+        const barsEl  = document.getElementById('freq-bars'); barsEl.innerHTML = '';
+        const groups  = ['背','胸','腿','肩','手臂','其他'];
+        const maxFreq = Math.max(1, ...groups.map(g=>freq[g]||0));
+        groups.forEach(g => {
+            const cnt = freq[g]||0, pct = Math.round((cnt/maxFreq)*100);
+            const bar = document.createElement('div'); bar.className = 'space-y-1';
+            bar.innerHTML = `<div class="flex justify-between items-center"><span class="g-${g} cal-badge border text-xs py-0.5 px-2">${g}</span><span class="text-xs text-on-surface-variant font-bold">${cnt} 次</span></div><div class="h-2 bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full rounded-full transition-all g-${g}" style="width:${pct}%;opacity:.8"></div></div>`;
+            barsEl.appendChild(bar);
+        });
+    }
+
+    function openModal(key, day, month, year, data) {
+        document.getElementById('modal-date').textContent = `${year}年${month}月${day}日`;
+        const content = document.getElementById('modal-content'); content.innerHTML = '';
+        const tags = document.createElement('div'); tags.className='flex gap-2 flex-wrap mb-3';
+        [...data.groups].forEach(g => { const t=document.createElement('span'); t.className=`g-${g} cal-badge border text-sm py-1 px-3`; t.textContent=g; tags.appendChild(t); }); content.appendChild(tags);
+        const sum = document.createElement('div'); sum.className='text-[10px] text-[#EAE6BC] uppercase tracking-widest mb-2'; sum.textContent=`${data.exercises.length} 项 · ${(data.exercises.reduce((s,r)=>s+(r.volume||0),0)/1000).toFixed(2)} Tons`; content.appendChild(sum);
+        data.exercises.forEach(r => {
+            const row = document.createElement('div'); row.className='flex items-center justify-between bg-surface-container-highest rounded-lg px-3 py-2.5 mt-2 border border-[#EAE6BC]/10';
+            row.innerHTML = `<span class="text-sm font-bold text-[#F0FFC2]">${r.action}</span><div class="text-right"><span class="text-xs font-headline text-primary">${r.weight}KG × ${r.reps}次 × ${r.sets}组</span></div>`; content.appendChild(row);
+        });
+        document.getElementById('modal').classList.replace('hidden','flex');
+    }
+    
+    document.getElementById('modal-close').addEventListener('click',()=>document.getElementById('modal').classList.replace('flex','hidden'));
+    document.getElementById('modal-overlay').addEventListener('click',()=>document.getElementById('modal').classList.replace('flex','hidden'));
+    document.getElementById('prev-month').addEventListener('click',()=> { if(--viewMonth<0){viewMonth=11;viewYear--;}; renderCal(); });
+    document.getElementById('next-month').addEventListener('click',()=> { if(++viewMonth>11){viewMonth=0;viewYear++;}; renderCal(); });
+
+    function getSuggestion() {
+        const recentGroups = new Set();
+        for (let i = 0; i < 2; i++) {
+            const d = new Date(today); d.setDate(d.getDate() - i);
+            const k = fmtKey(d);
+            if (dayMap[k]) dayMap[k].groups.forEach(g => recentGroups.add(g));
+        }
+        const freq = {};
+        getRecords().forEach(r => { freq[r.group] = (freq[r.group]||0) + 1; });
+        const all = ['背','胸','腿','肩','手臂'];
+        const candidates = all.filter(g => !recentGroups.has(g));
+
+        if (candidates.length === 0) return { group:'全身休息', reason:'连续多天训练，肌肉需要超补偿时间，建议休息' };
+        candidates.sort((a,b) => (freq[a]||0) - (freq[b]||0));
+        const pick = candidates[0];
+        const cnt  = freq[pick]||0;
+        const todayGroups = dayMap[fmtKey(today)] ? [...dayMap[fmtKey(today)].groups].join('、') : '无';
+        return {
+            group: pick,
+            reason: cnt === 0 ? `${pick}尚未训练，建议安排` : `${pick}仅${cnt}次，频率最低 (今日已练：${todayGroups})`
+        };
+    }
+
+    function initSched() {
+        buildMap();
+        document.getElementById('streak-count').textContent = calcStreak();
+        
+        let tData = dayMap[fmtKey(today)];
+        if(tData) {
+            document.getElementById('today-content').innerHTML = `<div class="flex items-center gap-2 flex-wrap mb-1">${[...tData.groups].map(g=>`<span class="g-${g} cal-badge border text-xs py-0.5 px-2 rounded font-bold">${g}</span>`).join('')}</div>`;
+        } else {
+            document.getElementById('today-content').innerHTML = `<p class="text-sm text-[#EAE6BC]">今天还没有打卡 · <button onclick="navTo('record')" class="text-primary font-bold">去训练 →</button></p>`;
+        }
+        renderCal();
+
+        const sug = getSuggestion();
+        document.getElementById('suggestion-text').textContent = `建议下次：${sug.group}`;
+        document.getElementById('suggestion-reason').textContent = sug.reason;
+    }
+    return { onEnter: initSched };
+})();
+
+// ====== MODULE: BADMINTON ======
+PageModules['index'] = (function() {
+    const exercises = [ "垫步大跳", "开合跳", "交叉跳", "左右启动步", "大步", "前后左右", "左脚V字", "右脚V字", "摸脚尖", "转体跳", "高抬腿", "后踢腿", "全蹲转髋", "两边蹬跳", "半蹲跳", "鸭子跳", "小碎步", "波比跳" ];
+    const workTime = 30, restTime = 10;
+    let currentIndex = 0, currentPhase = 'WORK', timeRemaining = workTime, globalTime = 12*60, isRunning = false, timerInterval = null, audioCtx = null, beatInterval = null, currentBpm = 0;
+    
+    const uiMain = document.getElementById("main-timer"), uiGlb = document.getElementById("global-timer"), uiPh = document.getElementById("phase-title"),
+          uiAct = document.getElementById("current-action"), uiNxt = document.getElementById("next-action"), uiLbl = document.getElementById("current-action-label");
+    const playPauseIcon = document.querySelector('#toggle-training-btn span');
+    
+    function formatTime(s) { return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }
+    function speak(text,rate=1.1,pitch=1.1) {
+        if(!('speechSynthesis' in window)) return; window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=rate; u.pitch=pitch;
+        window.speechSynthesis.speak(u);
+    }
+    function updateUI() {
+        uiMain.textContent = formatTime(timeRemaining); uiGlb.textContent = formatTime(globalTime);
+        if(currentPhase==='DONE') { uiPh.textContent="完成！"; uiAct.textContent="12分钟达成"; uiNxt.textContent="拉伸放松一下吧"; return; }
+        if(currentPhase==='WORK') {
+            uiPh.textContent=`第 ${currentIndex+1} / 18 组`; uiAct.textContent=exercises[currentIndex]; uiLbl.textContent="TRAINING"; uiLbl.className="inline-block text-[10px] bg-primary text-[#28396C] px-3 py-1 rounded-full font-bold uppercase mb-2 animate-pulse"; uiMain.className="font-headline text-[5rem] leading-none font-bold text-[#F0FFC2] drop-shadow-[0_0_15px_#B5E18B]";
+        } else {
+            uiPh.textContent="休息"; uiAct.textContent="调整呼吸"; uiLbl.textContent="REST"; uiLbl.className="inline-block text-[10px] bg-error text-[#28396C] px-3 py-1 rounded-full font-bold uppercase mb-2"; uiMain.className="font-headline text-[5rem] leading-none font-bold text-on-surface-variant/50";
+        }
+        uiNxt.textContent = (currentPhase==='WORK'?currentIndex+1:currentIndex)<exercises.length ? `下一个: ${exercises[(currentPhase==='WORK'?currentIndex+1:currentIndex)]}` : "最后一组！";
+    }
+
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+
+    function playDrumHit(type) {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        if (type === 'kick') {
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(1.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+        } else if (type === 'snare') {
+            const bufSize = ctx.sampleRate * 0.1; const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+            const data = buf.getChannelData(0); for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+            const src = ctx.createBufferSource(); src.buffer = buf;
+            const snareGain = ctx.createGain(); src.connect(snareGain); snareGain.connect(ctx.destination);
+            snareGain.gain.setValueAtTime(0.5, ctx.currentTime); snareGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+            src.start(ctx.currentTime);
+        } else {
+            osc.type = 'square'; osc.frequency.setValueAtTime(1200, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.04);
+        }
+    }
+
+    const patterns = {
+        110: [ [0,'kick'],[2,'hihat'],[4,'snare'],[6,'hihat'] ],
+        120: [ [0,'kick'],[2,'hihat'],[4,'snare'],[6,'hihat'] ],
+        135: [ [0,'kick'],[1,'hihat'],[2,'snare'],[3,'hihat'],[4,'kick'],[5,'hihat'],[6,'snare'],[7,'hihat'] ],
+        145: [ [0,'kick'],[1,'hihat'],[2,'kick'],[3,'snare'],[4,'kick'],[5,'hihat'],[6,'snare'],[7,'hihat'] ]
+    };
+
+    function startBeat(bpm) {
+        stopBeat(); currentBpm = bpm;
+        if(bpm <= 0) return;
+        const pat = patterns[bpm] || patterns[120];
+        const msBeat = (60000 / bpm) / (pat.length / 4);
+        let beatPos = 0;
+        beatInterval = setInterval(() => {
+            const hit = pat.find(p => p[0] === beatPos);
+            if (hit) playDrumHit(hit[1] === 'hihat' ? 'hihat' : hit[1]);
+            beatPos = (beatPos + 1) % pat.length;
+        }, msBeat);
+    }
+    function stopBeat() { if (beatInterval) { clearInterval(beatInterval); beatInterval = null; } }
+
+    const bpmMap = [120, 135, 145, 110];
+    const musicButtons = document.querySelectorAll('#music-buttons button');
+    musicButtons.forEach((btn, i) => {
+        btn.addEventListener('click', function() {
+            musicButtons.forEach(b => {
+                b.classList.remove('bg-primary/20', 'border', 'border-primary/50', 'text-primary');
+                b.classList.add('bg-surface-container-highest/50', 'text-[#EAE6BC]');
+                const sp = b.querySelector('span.material-symbols-outlined');
+                if(sp) sp.style.fontVariationSettings = "'FILL' 0";
+            });
+            this.classList.remove('bg-surface-container-highest/50', 'text-[#EAE6BC]');
+            this.classList.add('bg-primary/20', 'border', 'border-primary/50', 'text-primary');
+            const sp = this.querySelector('span.material-symbols-outlined');
+            if(sp) sp.style.fontVariationSettings = "'FILL' 1";
+            startBeat(bpmMap[i]);
+        });
+    });
+
+    document.getElementById('toggle-training-btn').addEventListener('click', () => {
+        if(currentPhase==='DONE') return;
+        if(isRunning) {
+            clearInterval(timerInterval); timerInterval=null;
+            stopBeat();
+            speak("暂停",1,1); playPauseIcon.textContent='play_arrow';
+        } else {
+            speak("开始！",1.2,1.2);
+            if(!audioCtx) getAudioCtx();
+            if(currentBpm > 0) startBeat(currentBpm);
+            
+            timerInterval = setInterval(() => {
+                if(globalTime<=0) return;
+                timeRemaining--; globalTime--;
+                if([3,2,1].includes(timeRemaining)&&currentPhase==='WORK') speak(String(timeRemaining),1.3,1.3);
+                if(timeRemaining<0) {
+                    if(currentPhase==='WORK') {
+                        currentPhase='REST'; currentIndex++;
+                        if(currentIndex>=exercises.length) { currentPhase='DONE'; timeRemaining=0; clearInterval(timerInterval); stopBeat(); updateUI(); speak("完成！",1.1,1.2); return; }
+                        timeRemaining=restTime; speak(`换！${exercises[currentIndex]}`,1.1,1.1);
+                    } else { currentPhase='WORK'; timeRemaining=workTime; speak(`${exercises[currentIndex]}！走`,1.2,1.2); }
+                }
+                updateUI();
+            }, 1000);
+            playPauseIcon.textContent='pause';
+        }
+        isRunning = !isRunning;
+    });
+    
+    updateUI();
+    return { onEnter: () => {} };
+})();
+
+// DEFAULT ROUTE -> RECORD 
+navTo('record');
+});
+</script>
+</body>
+</html>

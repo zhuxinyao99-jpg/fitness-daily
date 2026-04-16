@@ -1,0 +1,16 @@
+{
+  "name": "eric的健身助手",
+  "short_name": "eric健身",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b1229",
+  "theme_color": "#0b1229",
+  "description": "专属于 Eric 的 AI 健身教练",
+  "icons": [
+    {
+      "src": "screen.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

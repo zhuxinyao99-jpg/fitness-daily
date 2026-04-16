@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DIGITAL VANGUARD - AI 智能教练</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#122f5f",
+                        "on-tertiary-container": "#005b66",
+                        "on-secondary-fixed-variant": "#404560",
+                        "on-secondary": "#292f48",
+                        "inverse-on-surface": "#292f48",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#dde1ff",
+                        "tertiary": "#9befff",
+                        "tertiary-container": "#00daf3",
+                        "on-primary-container": "#385283",
+                        "surface-dim": "#0b1229",
+                        "surface-container-high": "#222941",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-bright": "#323851",
+                        "outline": "#8e909a",
+                        "on-surface": "#dce1ff",
+                        "surface-tint": "#adc6ff",
+                        "secondary-container": "#404560",
+                        "background": "#0b1229",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#44474f",
+                        "surface": "#0b1229",
+                        "on-secondary-fixed": "#141a32",
+                        "on-primary-fixed": "#001a42",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "secondary-fixed-dim": "#c0c5e5",
+                        "inverse-primary": "#455e90",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#001f24",
+                        "inverse-surface": "#dce1ff",
+                        "on-surface-variant": "#c4c6d0",
+                        "surface-variant": "#2d344c",
+                        "surface-container": "#181e36",
+                        "primary": "#d8e2ff",
+                        "surface-container-low": "#141a32",
+                        "surface-container-lowest": "#060d24",
+                        "on-tertiary": "#00363d",
+                        "on-background": "#dce1ff",
+                        "on-primary-fixed-variant": "#2c4677",
+                        "secondary": "#c0c5e5",
+                        "primary-container": "#adc6ff",
+                        "on-secondary-container": "#aeb4d3",
+                        "surface-container-highest": "#2d344c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .kinetic-gradient {
+            background: linear-gradient(135deg, rgba(173, 198, 255, 0.15) 0%, rgba(0, 218, 243, 0.15) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body selection:bg-tertiary/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/60 backdrop-blur-xl shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User" data-alt="close-up portrait of a futuristic athlete with subtle neon cybernetic implants on temple, cinematic lighting, deep blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdqDtQyAGuFwNHu1cwZJDQ-5l4nL1ODx4SPUsCClY-v5itJAI6YihP2fB7CnjS8D7_ju4CYYrXglwN3c5Con31ggO6JXRhtlNcTNhuk3tnw29OJm49CfWEwz9ECjT-Achp6d7VO-gaga1mZaIM7EFkx7rojCcdhIppBL0I-zLM19JhBPbWo7XK_voHPNr9i-PqzJpFC5RBXUexAlhtaiO8DqZHjodXZvAOpmjQK8CA0acVhQxToRql9yVRT5XLNOrY8kIGdsov--li"/>
+</div>
+<h1 class="text-xl font-headline font-bold tracking-widest text-[#adc6ff] uppercase">DIGITAL VANGUARD</h1>
+</div>
+<button class="text-[#adc6ff] hover:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-5xl mx-auto space-y-8">
+<!-- AI Coach Hero / Diagnosis -->
+<section class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-tertiary-container to-primary blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
+<div class="relative glass-panel bg-surface-container-low rounded-xl p-8 border border-outline-variant/10 overflow-hidden">
+<div class="absolute top-0 right-0 p-6 opacity-10">
+<span class="material-symbols-outlined text-9xl">psychology</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<span class="text-tertiary font-headline font-bold tracking-widest uppercase text-xs">AI 实时诊断报告</span>
+<h2 class="text-4xl font-headline font-bold tracking-tighter text-primary">CNS 神经系统疲劳度: 34%</h2>
+<p class="text-on-surface-variant max-w-md">当前中枢神经系统状态良好。检测到昨晚深度睡眠增加 12%，建议今日提升训练强度。</p>
+</div>
+<div class="flex flex-col items-start md:items-end">
+<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-1">建议 RPE 调整</div>
+<div class="text-3xl font-headline font-bold text-tertiary-container">RPE 8.5 <span class="text-sm font-normal text-on-surface-variant ml-1">(+0.5)</span></div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-high rounded-lg p-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">握力峰值</div>
+<div class="text-xl font-headline font-bold text-primary">58.2 KG</div>
+</div>
+<div class="bg-surface-container-high rounded-lg p-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">心率变异性</div>
+<div class="text-xl font-headline font-bold text-primary">72 MS</div>
+</div>
+<div class="bg-surface-container-high rounded-lg p-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">反应速度</div>
+<div class="text-xl font-headline font-bold text-tertiary-container">-40 MS</div>
+</div>
+<div class="bg-surface-container-high rounded-lg p-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">恢复指数</div>
+<div class="text-xl font-headline font-bold text-primary">极佳</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Progress & Analysis -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- 12 Week Progress Chart (Span 2) -->
+<div class="md:col-span-2 bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col justify-between h-[400px]">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-lg font-headline font-bold text-primary uppercase tracking-tight">12周进化预测</h3>
+<p class="text-xs text-on-surface-variant">基于当前容量增长率的潜力分析</p>
+</div>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="text-[10px] text-on-surface-variant uppercase">预测曲线</span>
+</div>
+</div>
+<div class="flex-1 mt-6 flex items-end gap-1 relative">
+<!-- Fake Chart Bars with Gradient -->
+<div class="flex-1 bg-surface-container-highest h-[20%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-surface-container-highest h-[25%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-surface-container-highest h-[22%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-surface-container-highest h-[35%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-surface-container-highest h-[45%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-surface-container-highest h-[40%] rounded-t-sm transition-all hover:bg-tertiary-container/40"></div>
+<div class="flex-1 bg-tertiary-container/20 h-[55%] rounded-t-sm border-t border-tertiary-container relative"></div>
+<div class="flex-1 bg-tertiary-container/30 h-[65%] rounded-t-sm border-t border-tertiary-container"></div>
+<div class="flex-1 bg-tertiary-container/40 h-[75%] rounded-t-sm border-t border-tertiary-container"></div>
+<div class="flex-1 bg-tertiary-container/50 h-[85%] rounded-t-sm border-t border-tertiary-container"></div>
+<div class="flex-1 bg-tertiary-container/60 h-[92%] rounded-t-sm border-t border-tertiary-container"></div>
+<div class="flex-1 bg-tertiary-container h-[100%] rounded-t-sm border-t border-tertiary-container">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-tertiary-container bg-background/80 px-2 py-1 rounded">+14%</div>
+</div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-on-surface-variant font-label">
+<span>WEEK 1</span>
+<span>WEEK 6 (当前)</span>
+<span>WEEK 12</span>
+</div>
+</div>
+<!-- Deep Movement Analysis -->
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col">
+<h3 class="text-lg font-headline font-bold text-primary uppercase tracking-tight mb-4">动作深度分析</h3>
+<div class="flex-1 relative rounded-lg overflow-hidden mb-4">
+<img alt="Squat Analysis" class="w-full h-full object-cover grayscale opacity-50" data-alt="professional powerlifter performing a low bar back squat, viewed from the side, biomechanical angle lines overlaid in neon cyan, dark gym environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-Zetx5TG0VmeSeApvzQwJknfx_gRjV21xvl6hN7EZGc5AzXg88vrPSeGN4_u9rN2qisaAvb-hy6FIpZ3qnMsF5JiiWavaBDtqhp9j1dcn1NWjOa3qPyOotzrpwRN3pvYNiIR5Vj4IRE3l3RNMMNjPMrZ6mWX2GwyWgwv8uYrCx9GwyqUGcdU8uE5zvcGLSy6NmR6Bik4FJihWMVCsNzRts4fVf7BQtc7x-XJ_SyjFBFfxEL5YU_YF8xfbpTVvA4CvqJZtgDqXoIcG"/>
+<div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-background to-transparent">
+<div class="flex justify-between items-center">
+<span class="text-xs font-bold text-tertiary-container">深蹲 (杠铃)</span>
+<span class="text-xs bg-tertiary-container text-on-tertiary px-2 py-0.5 rounded-full">合格</span>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">髋关节高度</span>
+<span class="text-sm font-headline font-bold text-primary">低水平面 2°</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">重心偏移</span>
+<span class="text-sm font-headline font-bold text-error">左偏 1.2cm</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full w-[88%] shadow-[0_0_8px_#00daf3]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Evolution Plan Recommendation -->
+<section class="space-y-6">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-2xl font-headline font-bold text-primary tracking-tighter">进化计划推荐</h2>
+<p class="text-sm text-on-surface-variant">基于你的生理数据生成的定制化周期</p>
+</div>
+<button class="text-xs font-bold text-tertiary uppercase tracking-widest border-b border-tertiary/30 pb-1">查看全部</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Plan 1 -->
+<div class="group relative bg-surface-container-low rounded-xl p-1 overflow-hidden transition-all hover:scale-[1.02]">
+<div class="absolute inset-0 kinetic-gradient opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative bg-surface-container-low rounded-lg p-6 flex items-center gap-6">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-4xl text-tertiary">bolt</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="text-lg font-bold text-primary">爆发力强化周期</h4>
+<span class="text-[10px] bg-primary/10 text-primary-container px-2 py-0.5 rounded border border-primary/20">4 WEEKS</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">重点提升神经系统募集速度与垂直纵跳。</p>
+<div class="mt-4 flex gap-4">
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">强度: <span class="text-primary">极高</span></div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">重点: <span class="text-primary">神经募集</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Plan 2 -->
+<div class="group relative bg-surface-container-low rounded-xl p-1 overflow-hidden transition-all hover:scale-[1.02]">
+<div class="absolute inset-0 kinetic-gradient opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative bg-surface-container-low rounded-lg p-6 flex items-center gap-6">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-4xl text-tertiary-container">layers</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="text-lg font-bold text-primary">肌肥大功能周期</h4>
+<span class="text-[10px] bg-primary/10 text-primary-container px-2 py-0.5 rounded border border-primary/20">6 WEEKS</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">均衡发展的容量周期，旨在最大化肌肉维度。</p>
+<div class="mt-4 flex gap-4">
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">强度: <span class="text-primary">中高</span></div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">重点: <span class="text-primary">容量累积</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/40 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(0,229,255,0.05)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">记录</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">统计</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#00daf3]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">教练</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">日程</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="#">
+<span class="material-symbols-outlined">sports_tennis</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest mt-1">专项</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#122f5f",
+                    "on-tertiary-container": "#005b66",
+                    "on-secondary-fixed-variant": "#404560",
+                    "on-secondary": "#292f48",
+                    "inverse-on-surface": "#292f48",
+                    "error": "#ffb4ab",
+                    "secondary-fixed": "#dde1ff",
+                    "tertiary": "#9befff",
+                    "tertiary-container": "#00daf3",
+                    "on-primary-container": "#385283",
+                    "surface-dim": "#0b1229",
+                    "surface-container-high": "#222941",
+                    "tertiary-fixed": "#9cf0ff",
+                    "surface-bright": "#323851",
+                    "outline": "#8e909a",
+                    "on-surface": "#dce1ff",
+                    "surface-tint": "#adc6ff",
+                    "secondary-container": "#404560",
+                    "background": "#0b1229",
+                    "error-container": "#93000a",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#44474f",
+                    "surface": "#0b1229",
+                    "on-secondary-fixed": "#141a32",
+                    "on-primary-fixed": "#001a42",
+                    "on-error": "#690005",
+                    "tertiary-fixed-dim": "#00daf3",
+                    "on-tertiary-fixed-variant": "#004f58",
+                    "secondary-fixed-dim": "#c0c5e5",
+                    "inverse-primary": "#455e90",
+                    "primary-fixed": "#d8e2ff",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-tertiary-fixed": "#001f24",
+                    "inverse-surface": "#dce1ff",
+                    "on-surface-variant": "#c4c6d0",
+                    "surface-variant": "#2d344c",
+                    "surface-container": "#181e36",
+                    "primary": "#d8e2ff",
+                    "surface-container-low": "#141a32",
+                    "surface-container-lowest": "#060d24",
+                    "on-tertiary": "#00363d",
+                    "on-background": "#dce1ff",
+                    "on-primary-fixed-variant": "#2c4677",
+                    "secondary": "#c0c5e5",
+                    "primary-container": "#adc6ff",
+                    "on-secondary-container": "#aeb4d3",
+                    "surface-container-highest": "#2d344c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        background-color: #0b1229;
+        color: #dce1ff;
+        font-family: 'Manrope', sans-serif;
+      }
+      .glass-card {
+        background: rgba(20, 26, 50, 0.4);
+        backdrop-filter: blur(20px);
+      }
+      .hud-glow {
+        filter: drop-shadow(0 0 8px #00daf3);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+<body class="min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0b1229]/60 backdrop-blur-xl shadow-[0px_24px_48px_rgba(0,229,255,0.08)]">
+<div class="text-xl font-bold tracking-widest text-[#adc6ff] font-['Space_Grotesk'] tracking-tighter uppercase">DIGITAL VANGUARD</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#adc6ff]/70 hover:scale-95 transition-transform cursor-pointer">notifications</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-[#adc6ff]/30">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a fit man in athletic wear, moody studio lighting, cool tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEFeW1p-VTwAQTKxfMw-6n2L787vEjA7IeHHELq7V-uxxA3rweHbV3Cg6USIjIy1qoxy3uBRL34fzfBB93h0WlpT8PxMXacOCtDqIonrhG1KI7i81RfW4IRrhpFBlN_IsFyJQRBTEf4TZcGu2372LzBIDoYJkB9mRxnw6QnlAJSDlyJv5R7UIfKYSYk-SK0Mmgtv8dnRct2ho5sXNKiQrkGzW6LibOImFleE01ZC_HAl-PyQ7w5Zq_DjKEcNtMnLf_GZkDa-bkeB1K"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto space-y-8">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="text-tertiary-container font-headline font-bold uppercase tracking-[0.2em] text-xs">Vanguard Analytics</span>
+<h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tighter text-primary mt-2">训练数据分析</h1>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high px-4 py-2 rounded-full text-sm font-bold text-on-surface hover:scale-95 transition-transform">近 7 天</button>
+<button class="bg-primary-container px-4 py-2 rounded-full text-sm font-bold text-on-primary-container hover:scale-95 transition-transform">导出报告</button>
+</div>
+</section>
+<!-- Top Metrics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Recovery Score (Progress Ring) -->
+<div class="md:col-span-1 glass-card p-8 rounded-lg flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-tertiary-container to-transparent opacity-50"></div>
+<span class="absolute top-6 left-6 text-xs font-bold text-on-surface-variant uppercase tracking-widest">恢复评分</span>
+<div class="relative w-48 h-48 flex items-center justify-center mt-4">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-variant" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-tertiary-container hud-glow" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.4" stroke-dashoffset="100.4" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-5xl font-headline font-bold text-primary">82</span>
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-widest">优良状态</span>
+</div>
+</div>
+</div>
+<!-- Weekly Volume (Column Chart) -->
+<div class="md:col-span-2 glass-card p-8 rounded-lg flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline text-headline-md font-bold text-primary tracking-tight">每日总做组容量趋势</h2>
+<div class="text-right">
+<span class="text-xs font-bold text-on-surface-variant uppercase block">近期最大训练量</span>
+<span class="text-2xl font-headline font-bold text-tertiary" id="total-volume-display">0 Tons</span>
+</div>
+<div class="h-40 w-full relative">
+<canvas id="volumeChart"></canvas>
+</div>
+</div>
+</div>
+<!-- AI Performance Insights -->
+<section class="relative rounded-lg overflow-hidden p-8 bg-gradient-to-br from-surface-container-high to-surface-container">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-tertiary-container/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+<div class="flex-1 space-y-4">
+<div class="flex items-center gap-3">
+<div class="bg-tertiary-container/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<h2 class="text-xl font-headline font-bold text-primary tracking-tight">AI 性能洞察</h2>
+</div>
+<p class="text-on-surface-variant leading-relaxed">
+                        基于过去7天的训练负荷（ACWR: 1.12），你的身体正处于<span class="text-tertiary font-bold">超补偿阶段</span>。
+                    </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+<div class="bg-[#0b1229]/40 p-4 rounded-xl border border-white/5">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block mb-2">恢复建议</span>
+<p class="text-sm text-on-surface">增加 20 分钟深层筋膜放松，睡眠时间需保持在 7.5 小时以上。</p>
+</div>
+<div class="bg-[#0b1229]/40 p-4 rounded-xl border border-white/5">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block mb-2">强度调整</span>
+<p class="text-sm text-on-surface">下周建议将大肌群负荷提升 5-8%，专注提升爆发力表现。</p>
+</div>
+</div>
+</div>
+<div class="hidden lg:block w-48">
+<img class="rounded-2xl opacity-50 mix-blend-screen shadow-[0_0_40px_rgba(0,218,243,0.2)]" data-alt="futuristic circuit board and fiber optic lights, blue and cyan neon glow, high tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKK-ZTnfe_PjexFocz9JxnqFpKJ--ZgDgBJa0nvaom06T99jverRLQVCVBWT6wMB2aib43-B_xa3KTh4_jYpJNk-mShcP6090_jladuZgBRNQ0wsNULWtbuUyv-2fcLGQp0jDWBe3dwmlfr2yDQ5Sio_YLdISRFG0kkjsvKhPv85z51TD41IzrEI0XJiL0OkuM_shHGNcW7cadsEuAWjWKdd9br1B764uzko8qEVDEkPkjiet7ZGWvvrobgG5gUpbcBe3USPl4Y86q"/>
+</div>
+</div>
+</section>
+<!-- Weight Trend (Line Chart) -->
+<section class="glass-card p-8 rounded-lg">
+<div class="flex justify-between items-center mb-10">
+<h2 class="text-xl font-headline font-bold text-primary tracking-tight">极限重量(1RM)演进</h2>
+<div class="text-right">
+<span class="text-xs font-bold text-on-surface-variant uppercase block">突破上限</span>
+<span class="text-2xl font-headline font-bold text-tertiary" id="current-smash-display">连接中</span>
+</div>
+</div>
+<div class="relative h-64 w-full mt-4">
+    <canvas id="weightChart"></canvas>
+</div>
+</section>
+<!-- PR Achievement Wall (Dynamic) -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-headline font-bold text-primary tracking-tight">💪 进步最快动作榜</h2>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">重量提升 TOP 4</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="pr-wall">
+<!-- Dynamically rendered by JS -->
+<div class="col-span-2 md:col-span-4 text-center text-on-surface-variant py-8" id="pr-placeholder">数据加载中...</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/40 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(0,229,255,0.05)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="record.html">
+<span class="material-symbols-outlined mb-1">edit_note</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">打卡</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_12px_#00daf3] transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">统计</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="schedule.html">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">日历</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="index.html">
+<span class="material-symbols-outlined mb-1">sports_tennis</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-widest">专项</span>
+</a>
+</nav>
+
+<!-- App Core Brain (Dynamic Charts Engine) -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- DATA HUB: Fetching Real GYM FITNESS Data ---
+        // ACTION → GROUP fallback map (handles old data without group field)
+        const A2G = {
+            '直臂下压':'背','坐姿划船':'背','高位下拉':'背','坐拉':'背','辅助引体':'背','坐姿下拉(左右)':'背',
+            '卧推':'胸','握推':'胸','辅助下胸':'胸','上斜哑铃':'胸','下胸':'胸','辅助推走':'胸','龙门架飞鸟':'胸','飞鸟超级组':'胸','卧推组合':'胸',
+            '深蹲':'腿','坐姿髋内收':'腿','髋外展':'腿','健步蹲':'腿','弓箭蹲':'腿','髋内收':'腿',
+            '拉绳索':'肩','绳索面拉':'肩','侧平举':'肩','龙门架侧平举':'肩','反向蝴蝶':'肩','推肩(躺)':'肩','坐姿反向飞鸟':'肩',
+        };
+
+        let generatedData = {
+            weekLabels: ['3/24', '3/25', '3/28', '3/29', '3/31', '4/7', '4/16'],
+            volumeData: [1.14, 1.84, 0.77, 2.46, 3.08, 1.32, 3.0], // Tons (example)
+            weightLabels: ['3/24', '3/25', '3/28', '3/29', '3/31', '4/7', '4/16'],
+            weightData: [23, 23, 10, 29, 27, 23, 27]
+        };
+        let latestRecord = "暂无突破";
+
+        // READ ONLY — never write/overwrite gym_records here
+        let realRecords = JSON.parse(localStorage.getItem('gym_records'));
+        // Normalise: attach group field if missing
+        if (realRecords) {
+            realRecords = realRecords.map(r => ({ ...r, group: r.group || A2G[r.action] || '其他' }));
+        }
+
+        if (realRecords && realRecords.length > 0) {
+            // Volume Chart logic: aggregate by date to show total daily Tons
+            // A quick agg map
+            const dailyVols = {};
+            // Weight Line chart logic: show max weight for a particular movement over time or total across all
+            const dailyMaxWgts = {};
+
+            realRecords.forEach(r => {
+                const dateKey = new Date(r.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+                dailyVols[dateKey] = (dailyVols[dateKey] || 0) + r.volume;
+                dailyMaxWgts[dateKey] = Math.max((dailyMaxWgts[dateKey] || 0), r.weight);
+            });
+
+            const uniqueDates = Object.keys(dailyVols).slice(-7); // take last 7 logged days
+            
+            generatedData.weekLabels = uniqueDates;
+            generatedData.weightLabels = uniqueDates;
+
+            // Map Volume Chart based on sum per day (Convert to Tons)
+            generatedData.volumeData = uniqueDates.map(dk => dailyVols[dk] / 1000); 
+            
+            // Map Line Chart based on daily MAX lifting weight pushed
+            generatedData.weightData = uniqueDates.map(dk => dailyMaxWgts[dk]);
+            
+            latestRecord = `${Math.max(...generatedData.weightData)} KG`;
+        }
+
+        // Update UI Text elements
+        const currentVol = generatedData.volumeData[generatedData.volumeData.length-1] || 0;
+        document.getElementById("total-volume-display").innerHTML = `${currentVol.toFixed(1)} <span class="text-sm font-normal text-on-surface-variant">Tons</span>`;
+        if(document.getElementById("current-smash-display")) {
+            document.getElementById("current-smash-display").textContent = latestRecord;
+        }
+
+        // Configure Chart.js global settings for the neon dark theme
+        Chart.defaults.color = '#c4c6d0'; // on-surface-variant
+        Chart.defaults.font.family = "'Space Grotesk', sans-serif";
+        
+        // 1. VOLUME BAR CHART
+        const ctxVol = document.getElementById('volumeChart').getContext('2d');
+        
+        // Create an energetic gradient
+        const gradVol = ctxVol.createLinearGradient(0, 0, 0, 400);
+        gradVol.addColorStop(0, 'rgba(0, 218, 243, 0.9)'); // tertiary color
+        gradVol.addColorStop(1, 'rgba(0, 218, 243, 0.1)');
+        
+        new Chart(ctxVol, {
+            type: 'bar',
+            data: {
+                labels: generatedData.weekLabels,
+                datasets: [{
+                    label: '每日总容量 (Tons)',
+                    data: generatedData.volumeData,
+                    backgroundColor: gradVol,
+                    borderRadius: 4,
+                    barPercentage: 0.6,
+                    hoverBackgroundColor: '#adc6ff' // primary
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(20, 26, 50, 0.9)',
+                        titleColor: '#00daf3',
+                        bodyColor: '#dce1ff',
+                        displayColors: false,
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, border: { display: false } },
+                    y: { display: false, grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. SMASH LINE CHART
+        const ctxWt = document.getElementById('weightChart').getContext('2d');
+        const gradWt = ctxWt.createLinearGradient(0, 0, 0, 400);
+        gradWt.addColorStop(0, 'rgba(173, 198, 255, 0.6)');
+        gradWt.addColorStop(1, 'rgba(173, 198, 255, 0)');
+
+        new Chart(ctxWt, {
+            type: 'line',
+            data: {
+                labels: generatedData.weightLabels,
+                datasets: [{
+                    label: '极限突破 (KG)',
+                    data: generatedData.weightData,
+                    borderColor: '#adc6ff',
+                    backgroundColor: gradWt,
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4, // ultra smooth cyber curves
+                    pointBackgroundColor: '#0b1229',
+                    pointBorderColor: '#adc6ff',
+                    pointBorderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(20, 26, 50, 0.9)',
+                        titleColor: '#adc6ff',
+                        displayColors: false,
+                        padding: 12,
+                        bodyFont: { size: 16, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { 
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: Math.max(0, Math.min(...generatedData.weightData) - 10),
+                        max: Math.min(100, Math.max(...generatedData.weightData) + 10)
+                    }
+                }
+            }
+        });
+
+        // --- PR WALL: Calculate most improved exercises ---
+        const allRecords = JSON.parse(localStorage.getItem('gym_records')) || [];
+        
+        // Group records by action name, track first & latest weight
+        const actionMap = {};
+        // Sort all records by date ascending first
+        const sorted = [...allRecords].sort((a, b) => new Date(a.date) - new Date(b.date));
+        sorted.forEach(r => {
+            if (!actionMap[r.action]) {
+                actionMap[r.action] = { first: r.weight, firstDate: r.date, latest: r.weight, latestDate: r.date, count: 1 };
+            } else {
+                actionMap[r.action].latest = r.weight;
+                actionMap[r.action].latestDate = r.date;
+                actionMap[r.action].count++;
+            }
+        });
+
+        // Filter to only actions that appear more than once
+        const improved = Object.entries(actionMap)
+            .filter(([, v]) => v.count > 1)
+            .map(([name, v]) => ({ name, gain: v.latest - v.first, latest: v.latest, first: v.first, date: v.latestDate }))
+            .sort((a, b) => b.gain - a.gain)
+            .slice(0, 4);
+
+        const prWall = document.getElementById('pr-wall');
+        const placeholder = document.getElementById('pr-placeholder');
+        
+        if (improved.length === 0) {
+            placeholder.textContent = '继续打卡，进步数据会在第二次记录同一动作后出现！';
+        } else {
+            placeholder.remove();
+            improved.forEach((item, i) => {
+                const gainText = item.gain > 0 ? `+${item.gain} KG ↑` : item.gain === 0 ? '维持水平' : `${item.gain} KG`;
+                const gainColor = item.gain > 0 ? 'text-tertiary-container' : 'text-on-surface-variant';
+                const dateStr = new Date(item.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+                const medals = ['🥇', '🥈', '🥉', '🏅'];
+                const card = document.createElement('div');
+                card.className = 'bg-surface-container-low p-5 rounded-xl border-l-4 border-tertiary-container shadow-xl hover:translate-y-[-4px] transition-transform cursor-pointer';
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xl">${medals[i]}</span>
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest truncate">${item.name}</span>
+                    </div>
+                    <div class="text-2xl font-headline font-bold text-primary">${item.latest} <span class="text-xs font-normal">KG</span></div>
+                    <div class="text-sm font-bold ${gainColor} mt-1">${gainText}</div>
+                    <div class="text-[10px] text-on-surface-variant mt-2">${item.first} → ${item.latest} KG · ${dateStr}</div>
+                `;
+                prWall.appendChild(card);
+            });
+        }
+
+        // Interactive Time Range filter
+        const filterBtns = document.querySelectorAll('.flex.gap-2 button');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.textContent.includes("近 7 天")) {
+                    this.textContent = "近 30 天";
+                    this.classList.replace('bg-surface-container-high', 'bg-tertiary-container');
+                    this.classList.replace('text-on-surface', 'text-on-tertiary-container');
+                } else if(this.textContent.includes("近 30 天")) {
+                    this.textContent = "近 7 天";
+                    this.classList.replace('bg-tertiary-container', 'bg-surface-container-high');
+                    this.classList.replace('text-on-tertiary-container', 'text-on-surface');
+                }
+            });
+        });
+    });
+</script>
+</body></html>

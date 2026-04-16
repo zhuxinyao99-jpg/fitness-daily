@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>训练日历 - Eric's Fitness</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode:"class", theme:{ extend:{
+      colors:{
+        "primary":"#d8e2ff","tertiary":"#9befff","tertiary-container":"#00daf3",
+        "background":"#0b1229","surface":"#0b1229","surface-container-low":"#141a32",
+        "surface-container-highest":"#2d344c","on-surface":"#dce1ff",
+        "on-surface-variant":"#c4c6d0","primary-fixed-dim":"#adc6ff","error":"#ffb4ab",
+      },
+      fontFamily:{ headline:["Space Grotesk"], body:["Manrope"] }
+    }}
+  }
+</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+  body{min-height:max(884px,100dvh);background-color:#0b1229;color:#dce1ff}
+
+  /* ── Colour tokens per muscle group ── */
+  :root {
+    --c-背:   #3b82f6;  --bg-背:  rgba(59,130,246,0.18);
+    --c-胸:   #ef4444;  --bg-胸:  rgba(239,68,68,0.18);
+    --c-腿:   #22c55e;  --bg-腿:  rgba(34,197,94,0.18);
+    --c-肩:   #f59e0b;  --bg-肩:  rgba(245,158,11,0.18);
+    --c-手臂: #a855f7;  --bg-手臂:rgba(168,85,247,0.18);
+    --c-其他: #06b6d4;  --bg-其他:rgba(6,182,212,0.18);
+  }
+  .g-背   {color:var(--c-背);  background:var(--bg-背);  border-color:var(--c-背)}
+  .g-胸   {color:var(--c-胸);  background:var(--bg-胸);  border-color:var(--c-胸)}
+  .g-腿   {color:var(--c-腿);  background:var(--bg-腿);  border-color:var(--c-腿)}
+  .g-肩   {color:var(--c-肩);  background:var(--bg-肩);  border-color:var(--c-肩)}
+  .g-手臂 {color:var(--c-手臂);background:var(--bg-手臂);border-color:var(--c-手臂)}
+  .g-其他 {color:var(--c-其他);background:var(--bg-其他);border-color:var(--c-其他)}
+
+  /* Calendar day cell */
+  .cal-day {
+    min-height:60px;
+    border-radius:10px;
+    padding:4px 3px 3px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    cursor:default;
+    transition: transform .15s;
+    border: 1px solid transparent;
+  }
+  .cal-day.has-data { cursor:pointer; }
+  .cal-day.has-data:active { transform:scale(.95); }
+  .cal-day.is-today { border-color:#00daf3 !important; background:rgba(0,218,243,.05); }
+  .cal-day-num {
+    font-size:11px; font-weight:700; line-height:1;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  /* Group badge inside calendar cell */
+  .cal-badge {
+    font-size:9px; font-weight:800;
+    padding:1px 4px; border-radius:4px;
+    border-width:1px; border-style:solid;
+    line-height:1.4; letter-spacing:.02em;
+    max-width:100%; text-align:center;
+  }
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="font-body pb-32">
+
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-5 h-16 bg-[#0b1229]/80 backdrop-blur-xl border-b border-white/5">
+  <span class="font-headline text-lg font-bold text-primary-fixed-dim">训练日历</span>
+  <div class="flex items-center gap-2">
+    <button id="prev-month" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+      <span class="material-symbols-outlined text-sm">chevron_left</span>
+    </button>
+    <span id="month-label" class="text-sm font-bold text-on-surface font-headline min-w-[72px] text-center"></span>
+    <button id="next-month" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+      <span class="material-symbols-outlined text-sm">chevron_right</span>
+    </button>
+  </div>
+</header>
+
+<main class="pt-20 px-4 max-w-lg mx-auto space-y-4">
+
+  <!-- STREAK STATS -->
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-surface-container-low rounded-xl p-4 border border-white/5 text-center">
+      <div class="text-3xl font-headline font-bold text-tertiary-container" id="streak-count">0</div>
+      <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">🔥 连续天</div>
+    </div>
+    <div class="bg-surface-container-low rounded-xl p-4 border border-white/5 text-center">
+      <div class="text-3xl font-headline font-bold text-primary" id="month-count">0</div>
+      <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">本月打卡</div>
+    </div>
+    <div class="bg-surface-container-low rounded-xl p-4 border border-white/5 text-center">
+      <div class="text-3xl font-headline font-bold text-error" id="rest-days">0</div>
+      <div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">休息天</div>
+    </div>
+  </div>
+
+  <!-- TODAY BANNER -->
+  <div class="rounded-xl p-4 border border-white/10 bg-surface-container-low space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">今日训练</span>
+      <a href="record.html" class="text-[10px] font-bold text-tertiary-container uppercase tracking-widest">＋ 打卡</a>
+    </div>
+    <div id="today-content"></div>
+  </div>
+
+  <!-- SMART SUGGESTION -->
+  <div class="bg-gradient-to-r from-[#1a2f4a] to-[#0b1229] rounded-xl p-4 border border-blue-500/20">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <span class="material-symbols-outlined text-tertiary-container text-sm" style="font-variation-settings:'FILL' 1">psychology</span>
+      </div>
+      <div>
+        <p class="text-[10px] font-bold text-tertiary-container uppercase tracking-widest mb-1">智能推荐 · 下次训练</p>
+        <p class="text-sm font-bold text-on-surface" id="suggestion-text">分析中...</p>
+        <p class="text-[10px] text-on-surface-variant mt-1" id="suggestion-reason"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <section class="bg-surface-container-low rounded-xl p-3 border border-white/5">
+    <div class="grid grid-cols-7 mb-1 gap-1">
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">日</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">一</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">二</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">三</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">四</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">五</div>
+      <div class="text-center text-[10px] font-bold text-on-surface-variant py-1">六</div>
+    </div>
+    <div class="grid grid-cols-7 gap-1" id="calendar-grid"></div>
+  </section>
+
+  <!-- LEGEND -->
+  <div class="flex flex-wrap gap-x-4 gap-y-2 px-1">
+    <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-背 border"></div><span class="text-[10px] text-on-surface-variant">背</span></div>
+    <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-胸 border"></div><span class="text-[10px] text-on-surface-variant">胸</span></div>
+    <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-腿 border"></div><span class="text-[10px] text-on-surface-variant">腿</span></div>
+    <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-肩 border"></div><span class="text-[10px] text-on-surface-variant">肩</span></div>
+    <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded g-手臂 border"></div><span class="text-[10px] text-on-surface-variant">手臂</span></div>
+  </div>
+
+  <!-- FREQ BARS -->
+  <section class="bg-surface-container-low rounded-xl p-4 border border-white/5">
+    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">本月各部位频次</p>
+    <div id="freq-bars" class="space-y-3"></div>
+  </section>
+
+</main>
+
+<!-- NAV -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#0b1229]/60 backdrop-blur-xl rounded-t-3xl border-t border-white/5">
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="record.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl">edit_note</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">打卡</span>
+  </a>
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="page_2.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl">insights</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">统计</span>
+  </a>
+  <a class="flex flex-col items-center text-[#00daf3] bg-[#adc6ff]/10 rounded-full px-4 py-2 drop-shadow-[0_0_10px_#00daf3]" href="schedule.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl" style="font-variation-settings:'FILL' 1">calendar_today</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">日历</span>
+  </a>
+  <a class="flex flex-col items-center text-[#adc6ff]/50 hover:text-[#9befff] transition-colors" href="index.html">
+    <span class="material-symbols-outlined mb-0.5 text-xl">sports_tennis</span>
+    <span class="text-[10px] font-bold uppercase tracking-widest">专项</span>
+  </a>
+</nav>
+
+<!-- DAY DETAIL MODAL -->
+<div id="modal" class="fixed inset-0 z-[100] hidden items-end justify-center">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
+  <div class="relative w-full max-w-lg bg-[#141a32] rounded-t-3xl p-5 border-t border-white/10 pb-12" style="max-height:75vh;overflow-y:auto">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-headline font-bold text-lg text-primary" id="modal-date"></h3>
+      <button id="modal-close" class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </div>
+    <div id="modal-content" class="space-y-2"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ── ACTION → GROUP FALLBACK MAP (handles old data without group field) ─
+  const A2G = {
+    '直臂下压':'背','坐姿划船':'背','高位下拉':'背','坐拉':'背','辅助引体':'背',
+    '坐姿下拉(左右)':'背','坐姿下拉':'背',
+    '卧推':'胸','握推':'胸','辅助下胸':'胸','上斜哑铃':'胸','下胸':'胸',
+    '辅助推走':'胸','龙门架飞鸟':'胸','飞鸟超级组':'胸',
+    '深蹲':'腿','坐姿髋内收':'腿','髋外展':'腿','健步蹲':'腿','弓箭蹲':'腿','髋内收':'腿',
+    '拉绳索':'肩','绳索面拉':'肩','侧平举':'肩','龙门架侧平举':'肩',
+    '反向蝴蝶':'肩','推肩(躺)':'肩','坐姿反向飞鸟':'肩',
+    '二头弯举':'手臂','锤式弯举':'手臂','三头下压':'手臂','窄距俯卧撑':'手臂',
+  };
+
+  function getGroup(r) { return r.group || A2G[r.action] || '其他'; }
+
+  // ── LOAD & NORMALISE DATA ─────────────────────────────────────
+  const raw = JSON.parse(localStorage.getItem('gym_records') || '[]');
+  // Attach group field if missing
+  const records = raw.map(r => ({ ...r, group: getGroup(r) }));
+
+  // Build dayMap: localDateKey → { groups:Set, exercises:[] }
+  const dayMap = {};
+  records.forEach(r => {
+    const d = new Date(r.date);
+    const key = fmtKey(d);
+    if (!dayMap[key]) dayMap[key] = { groups: new Set(), exercises: [] };
+    dayMap[key].groups.add(r.group);
+    dayMap[key].exercises.push({ ...r, group: r.group });
+  });
+
+  // ── HELPERS ───────────────────────────────────────────────────
+  function fmtKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  const today = new Date();
+  let viewYear  = today.getFullYear();
+  let viewMonth = today.getMonth();
+
+  // ── STREAK ────────────────────────────────────────────────────
+  function calcStreak() {
+    let streak = 0;
+    const cursor = new Date(today);
+    // If no training today yet, start from yesterday
+    if (!dayMap[fmtKey(cursor)]) cursor.setDate(cursor.getDate()-1);
+    while (dayMap[fmtKey(cursor)]) {
+      streak++;
+      cursor.setDate(cursor.getDate()-1);
+    }
+    return streak;
+  }
+
+  // ── SUGGESTION (reads live from dayMap, no stale state) ───────
+  function getSuggestion() {
+    // Collect groups trained in the last 2 CALENDAR days (today + yesterday)
+    const recentGroups = new Set();
+    for (let i = 0; i < 2; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k = fmtKey(d);
+      if (dayMap[k]) dayMap[k].groups.forEach(g => recentGroups.add(g));
+    }
+
+    // Count frequency of each group in ALL records
+    const freq = {};
+    records.forEach(r => { freq[r.group] = (freq[r.group]||0) + 1; });
+
+    const all = ['背','胸','腿','肩','手臂'];
+    const candidates = all.filter(g => !recentGroups.has(g));
+
+    if (candidates.length === 0) {
+      return { group:'今日可以全身休息', reason:'你连续多天高强度训练，肌肉需要超补偿时间，今天建议休息或轻度有氧' };
+    }
+    candidates.sort((a,b) => (freq[a]||0) - (freq[b]||0));
+    const pick = candidates[0];
+    const cnt  = freq[pick]||0;
+    const todayGroups = dayMap[fmtKey(today)] ? [...dayMap[fmtKey(today)].groups].join('、') : '无';
+    return {
+      group: pick,
+      reason: cnt === 0
+        ? `${pick}部位还未训练过，建议安排` 
+        : `${pick}仅${cnt}次，频率最低 (今日已练：${todayGroups})`
+    };
+  }
+
+  // ── TODAY BANNER ──────────────────────────────────────────────
+  function renderTodayBanner() {
+    const key  = fmtKey(today);
+    const data = dayMap[key];
+    const el   = document.getElementById('today-content');
+    if (!data) {
+      el.innerHTML = `<p class="text-sm text-on-surface-variant">今天还没有打卡 · <a href="record.html" class="text-tertiary-container font-bold">去训练 →</a></p>`;
+      return;
+    }
+    const totalVol = data.exercises.reduce((s,r) => s+(r.volume||0), 0);
+    const groups   = [...data.groups];
+    el.innerHTML = `
+      <div class="flex items-center gap-2 flex-wrap mb-1">
+        ${groups.map(g=>`<span class="g-${g} cal-badge border text-xs py-0.5 px-2 rounded font-bold">${g}</span>`).join('')}
+        <span class="text-on-surface-variant text-xs">· ${data.exercises.length}项 · ${(totalVol/1000).toFixed(2)} Tons</span>
+      </div>
+      <p class="text-xs text-on-surface-variant leading-relaxed">${data.exercises.map(r=>r.action).join('、')}</p>`;
+  }
+
+  // ── CALENDAR RENDER ───────────────────────────────────────────
+  function renderCalendar(year, month) {
+    document.getElementById('month-label').textContent = `${year}年${month+1}月`;
+    const grid = document.getElementById('calendar-grid');
+    grid.innerHTML = '';
+
+    const firstDay    = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    for (let i=0; i<firstDay; i++) {
+      const ph = document.createElement('div');
+      ph.className = 'cal-day';
+      grid.appendChild(ph);
+    }
+
+    for (let d=1; d<=daysInMonth; d++) {
+      const key      = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const data     = dayMap[key];
+      const isToday  = year===today.getFullYear() && month===today.getMonth() && d===today.getDate();
+      const isFuture = new Date(year,month,d) > today;
+
+      const el = document.createElement('div');
+      el.className = `cal-day ${isToday?'is-today':''} ${data?'has-data':''}`;
+      if (!isFuture && !data) el.style.background = 'rgba(20,26,50,0.25)';
+
+      // Day number
+      const num = document.createElement('div');
+      num.className = `cal-day-num ${isToday?'text-tertiary-container':isFuture?'text-on-surface-variant/30':data?'text-on-surface':'text-on-surface-variant/40'}`;
+      num.textContent = d;
+      el.appendChild(num);
+
+      // Group badges (prominent!)
+      if (data && data.groups.size > 0) {
+        [...data.groups].forEach(g => {
+          const badge = document.createElement('div');
+          badge.className = `cal-badge g-${g} border`;
+          badge.textContent = g;
+          el.appendChild(badge);
+        });
+      }
+
+      if (data) {
+        el.addEventListener('click', () => openModal(key, d, month+1, year, data));
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  // ── MONTH STATS ───────────────────────────────────────────────
+  function renderMonthStats(year, month) {
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const upToDay     = (year===today.getFullYear()&&month===today.getMonth()) ? today.getDate() : daysInMonth;
+    let trainDays  = 0;
+    const groupFreq = {};
+
+    for (let d=1; d<=upToDay; d++) {
+      const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      if (dayMap[key]) {
+        trainDays++;
+        dayMap[key].groups.forEach(g => { groupFreq[g] = (groupFreq[g]||0)+1; });
+      }
+    }
+    document.getElementById('month-count').textContent = trainDays;
+    document.getElementById('rest-days').textContent   = upToDay - trainDays;
+
+    const barsEl  = document.getElementById('freq-bars');
+    barsEl.innerHTML = '';
+    const groups  = ['背','胸','腿','肩','手臂','其他'];
+    const maxFreq = Math.max(1, ...groups.map(g=>groupFreq[g]||0));
+    groups.forEach(g => {
+      const cnt = groupFreq[g]||0;
+      const pct = Math.round((cnt/maxFreq)*100);
+      const bar = document.createElement('div');
+      bar.className = 'space-y-1';
+      bar.innerHTML = `
+        <div class="flex justify-between items-center">
+          <span class="g-${g} cal-badge border text-xs py-0.5 px-2">${g}</span>
+          <span class="text-xs text-on-surface-variant font-bold">${cnt} 次</span>
+        </div>
+        <div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all g-${g}" style="width:${pct}%;opacity:.8"></div>
+        </div>`;
+      barsEl.appendChild(bar);
+    });
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────────
+  function openModal(key, day, month, year, data) {
+    document.getElementById('modal-date').textContent = `${year}年${month}月${day}日`;
+    const content = document.getElementById('modal-content');
+    content.innerHTML = '';
+
+    // Group tags
+    const tags = document.createElement('div');
+    tags.className = 'flex gap-2 flex-wrap mb-3';
+    [...data.groups].forEach(g => {
+      const t = document.createElement('span');
+      t.className = `g-${g} cal-badge border text-sm py-1 px-3`;
+      t.textContent = g;
+      tags.appendChild(t);
+    });
+    content.appendChild(tags);
+
+    const totalVol = data.exercises.reduce((s,r) => s+(r.volume||0), 0);
+    const sum = document.createElement('div');
+    sum.className = 'text-[10px] text-on-surface-variant uppercase tracking-widest mb-2';
+    sum.textContent = `${data.exercises.length} 项 · 总容量 ${(totalVol/1000).toFixed(2)} Tons`;
+    content.appendChild(sum);
+
+    data.exercises.forEach(r => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between bg-surface-container-highest rounded-lg px-3 py-2.5';
+      row.innerHTML = `
+        <span class="text-sm font-bold text-on-surface">${r.action}</span>
+        <div class="text-right">
+          <span class="text-xs font-headline text-primary">${r.weight}KG × ${r.reps}次 × ${r.sets}组</span>
+          <span class="text-[10px] text-tertiary-container block">${((r.volume||0)/1000).toFixed(2)} Tons</span>
+        </div>`;
+      content.appendChild(row);
+    });
+
+    document.getElementById('modal').classList.replace('hidden','flex');
+  }
+
+  document.getElementById('modal-close').addEventListener('click',   () => document.getElementById('modal').classList.replace('flex','hidden'));
+  document.getElementById('modal-overlay').addEventListener('click', () => document.getElementById('modal').classList.replace('flex','hidden'));
+
+  // ── MONTH NAV ─────────────────────────────────────────────────
+  document.getElementById('prev-month').addEventListener('click', () => {
+    if (--viewMonth < 0) { viewMonth=11; viewYear--; }
+    renderCalendar(viewYear, viewMonth); renderMonthStats(viewYear, viewMonth);
+  });
+  document.getElementById('next-month').addEventListener('click', () => {
+    if (++viewMonth > 11) { viewMonth=0; viewYear++; }
+    renderCalendar(viewYear, viewMonth); renderMonthStats(viewYear, viewMonth);
+  });
+
+  // ── INIT ─────────────────────────────────────────────────────
+  document.getElementById('streak-count').textContent = calcStreak();
+  renderTodayBanner();
+  renderCalendar(viewYear, viewMonth);
+  renderMonthStats(viewYear, viewMonth);
+
+  const sug = getSuggestion();
+  document.getElementById('suggestion-text').textContent  = `建议下次：${sug.group}`;
+  document.getElementById('suggestion-reason').textContent = sug.reason;
+});
+</script>
+</body>
+</html>
